@@ -1,4 +1,4 @@
-# NX12 MKE 板类零件自动化加工规则库手册
+﻿# NX12 MKE 板类零件自动化加工规则库手册
 
 **版本**: v2.0 | **发布日期**: 2026-04-27 | **状态**: 生产就绪
 
@@ -753,4 +753,1146 @@ validate_xml('machining_knowledge.xml')
 
 **文档维护**: 工艺工程团队  
 **最后更新**: 2026-04-27  
+**状态**: ✅ 生产就绪 (Production Ready)
+
+
+---
+
+## 附录A: 完整规则 Conditions 代码块
+
+> **说明**: 以下所有规则的完整 Conditions 代码可直接复制到 MKE 编辑器使用。
+### 3) 1.1\~1.4 完整 Conditions（可直接复制到 MKE）
+
+```text
+REM ----- 1.1_Face_Top_Rough -----
+REM Application Criteria
+mwf.AREA >= 400.0
+mwf.AREA <= 200000.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 40.0
+tool.Diameter <= 80.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "1.1_Face_Top_Rough"
+
+REM ----- 1.2_Face_Top_Finish -----
+REM Application Criteria
+mwf.AREA >= 300.0
+mwf.AREA <= 200000.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 32.0
+tool.Diameter <= 63.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "1.2_Face_Top_Finish"
+
+REM ----- 1.3_Face_Bottom_Finish -----
+REM Application Criteria
+mwf.AREA >= 300.0
+mwf.AREA <= 200000.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 32.0
+tool.Diameter <= 63.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "1.3_Face_Bottom_Finish"
+
+REM ----- 1.4_Face_ThinWall_LightCut -----
+REM Application Criteria
+mwf.AREA >= 100.0
+mwf.AREA <= 50000.0
+mwf.THICKNESS <= 8.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 16.0
+tool.Diameter <= 40.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "1.4_Face_ThinWall_LightCut"
+```
+
+**批量建规则参数表（Face）：**
+```text
+p{0.34}|>{}p{0.26}|>{}p{0.24}|}
+Rule Name（规则名） & Application Criteria（示例） & Tool Attributes（tool.Diameter）
+1.1\_Face\_Top\_Rough & AREA:[400,200000] & [40,80]
+1.2\_Face\_Top\_Finish & AREA:[300,200000] & [32,63]
+1.3\_Face\_Bottom\_Finish & AREA:[300,200000] & [32,63]
+1.4\_Face\_ThinWall\_LightCut & AREA:[100,50000], THK8 & [16,40]
+```
+
+**4 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+1.1\_Face\_Top\_Rough & 1210
+1.2\_Face\_Top\_Finish & 1220
+1.3\_Face\_Bottom\_Finish & 1230
+1.4\_Face\_ThinWall\_LightCut & 1240
+```
+
+**录库检查清单（Face_Milling）：**
+
+- Top Rough / Top Finish / Bottom Finish 命名必须与工序方向一致，避免镜像件误用。
+- 1.4 仅用于薄板条件（如 `THICKNESS <= 8.0`），避免抢占常规面加工规则。
+- 粗精加工建议成对存在，避免仅有粗加工导致基准面粗糙度不达标。
+
+## 3. 02_Pocket_Slot：口袋与槽库（可直接落库）
+
+**目标：** 对二维口袋、通槽、闭槽、窄长槽建立“粗-精-清角”分阶段规则，兼顾效率与可追溯性。
+
+### 1) 推荐规则清单（板类通用）
+
+```text
+p{0.30}|>{}p{0.44}|>{}p{0.14}|}
+Rule Name（规则名） & OperationClass（建议） & Priority（建议）
+2.1\_Pocket\_Rough\_General & CavityMilling / CAVITY\_MILL & 2410
+2.2\_Pocket\_Finish\_Wall & ProfileMilling / PROFILE & 2420
+2.3\_Pocket\_Finish\_Floor & PlanarMilling / PLANAR\_MILL & 2430
+2.4\_Slot\_Open\_Rough & SlotMilling / SLOT\_MILL & 2440
+2.5\_Slot\_Closed\_Finish & SlotMilling / SLOT\_MILL & 2450
+2.6\_Corner\_Rest\_Mill & RestMilling / REST\_MILL & 2460
+```
+
+### 2) 口袋规则模板（2.1_Pocket_Rough_General）
+
+```text
+REM Application Criteria
+mwf.DEPTH >= 1.0
+mwf.DEPTH <= 40.0
+mwf.MIN_CORNER_RADIUS >= 2.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.0
+tool.Diameter <= 20.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.1_Pocket_Rough_General"
+```
+
+### 3) 槽规则模板（2.4_Slot_Open_Rough）
+
+```text
+REM Application Criteria
+mwf.WIDTH >= 6.0
+mwf.WIDTH <= 24.0
+mwf.DEPTH <= 20.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.0
+tool.Diameter <= 16.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.4_Slot_Open_Rough"
+```
+
+**落地要点：**
+
+- Pocket 与 Slot 建议拆库管理，但保持统一命名前缀 `2.x_`。
+- 清角规则（2.6）优先级应高于精加工轮廓，避免残料未清导致边角超差。
+- 对超窄槽（宽度 $<6$）建议单独建微径刀规则，避免在通用槽规则中误匹配。
+
+### 4) 2.1\~2.6 完整 Conditions（可直接复制到 MKE）
+
+```text
+REM ----- 2.1_Pocket_Rough_General -----
+REM Application Criteria
+mwf.DEPTH >= 1.0
+mwf.DEPTH <= 40.0
+mwf.MIN_CORNER_RADIUS >= 2.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.0
+tool.Diameter <= 20.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.1_Pocket_Rough_General"
+
+REM ----- 2.2_Pocket_Finish_Wall -----
+REM Application Criteria
+mwf.DEPTH >= 1.0
+mwf.DEPTH <= 40.0
+mwf.WALL_ANGLE <= 2.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 6.0
+tool.Diameter <= 16.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.2_Pocket_Finish_Wall"
+
+REM ----- 2.3_Pocket_Finish_Floor -----
+REM Application Criteria
+mwf.DEPTH >= 1.0
+mwf.DEPTH <= 40.0
+mwf.BOTTOM_RADIUS <= 1.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 6.0
+tool.Diameter <= 20.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.3_Pocket_Finish_Floor"
+
+REM ----- 2.4_Slot_Open_Rough -----
+REM Application Criteria
+mwf.WIDTH >= 6.0
+mwf.WIDTH <= 24.0
+mwf.DEPTH <= 20.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.0
+tool.Diameter <= 16.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.4_Slot_Open_Rough"
+
+REM ----- 2.5_Slot_Closed_Finish -----
+REM Application Criteria
+mwf.WIDTH >= 4.0
+mwf.WIDTH <= 16.0
+mwf.DEPTH <= 20.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 3.0
+tool.Diameter <= 10.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.5_Slot_Closed_Finish"
+
+REM ----- 2.6_Corner_Rest_Mill -----
+REM Application Criteria
+mwf.MIN_CORNER_RADIUS <= 2.0
+mwf.DEPTH <= 30.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 2.0
+tool.Diameter <= 8.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.6_Corner_Rest_Mill"
+```
+
+**批量建规则参数表（Pocket_Slot）：**
+```text
+p{0.34}|>{}p{0.26}|>{}p{0.24}|}
+规则名 & Application Criteria（示例） & Tool Attributes（tool.Diameter）
+2.1\_Pocket\_Rough\_General & DEPTH:[1,40], R_{min}2 & [8,20]
+2.2\_Pocket\_Finish\_Wall & DEPTH:[1,40], WALL\_ANGLE2 & [6,16]
+2.3\_Pocket\_Finish\_Floor & DEPTH:[1,40], BOTTOM\_R1 & [6,20]
+2.4\_Slot\_Open\_Rough & WIDTH:[6,24], DEPTH20 & [5,16]
+2.5\_Slot\_Closed\_Finish & WIDTH:[4,16], DEPTH20 & [3,10]
+2.6\_Corner\_Rest\_Mill & R_{min}2, DEPTH30 & [2,8]
+```
+
+**6 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+2.1\_Pocket\_Rough\_General & 2410
+2.2\_Pocket\_Finish\_Wall & 2420
+2.3\_Pocket\_Finish\_Floor & 2430
+2.4\_Slot\_Open\_Rough & 2440
+2.5\_Slot\_Closed\_Finish & 2450
+2.6\_Corner\_Rest\_Mill & 2460
+```
+
+**录库检查清单（Pocket_Slot）：**
+
+- 口袋与槽规则窗口应互斥（尤其按 `WIDTH` 条件），避免同一特征双命中。
+- 2.6 清角规则应保留最高优先级，确保角部残料不会遗留到后续工序。
+- 闭槽规则（2.5）建议绑定更小刀径窗口，避免大刀误匹配导致过切。
+
+# 4. 03_Hole_Making：板类零件基于特征的孔加工
+
+使用操作类型模板 `hole_making`，可以创建以下“手动的、基于特征（feature-based）”的孔加工操作：
+
+- 定位钻（Spot Drilling）
+- 钻孔（Drilling）
+- 沉头（Countersinking）
+- 攻丝（Tapping）
+- 孔铣（Hole Milling）
+- 凸台铣（Boss Milling）
+- 螺纹铣（Thread Milling）
+- 凸台螺纹铣（Boss Thread Milling）
+
+待加工板类零件可以包含：特征、带属性的几何实体、带属性的特征，或以上三者的任意组合。
+
+## 孔径归一化（示例）
+
+**螺纹底孔（钻）归一化：**
+```text
+p{0.30}|>{}p{0.28}|>{}p{0.28}|}
+螺纹代号 & 钻头直径 / mm & 归一范围 / mm
+M4 & 3.4 & [3.10,\ 3.50]
+M5 & 4.3 & [4.10,\ 4.50]
+M6 & 5.2 & [5.10,\ 5.50]
+M8 & 6.9 & [6.50,\ 6.98]
+M10 & 8.7 & [8.10,\ 8.98]
+M12 & 10.5 & [10.10,\ 10.80]
+M16 & 14.3 & [13.50,\ 14.50]
+M20 & 17.8 & [17.10,\ 17.98]
+```
+
+**螺纹过孔（钻）：** 9、11、13、17、21（mm）。
+
+**销孔（钻+铰，铰前留量 $+0.3$）：**
+```text
+p{0.30}|>{}p{0.28}|>{}p{0.28}|}
+销孔直径 D / mm & 预钻目标 D-0.3 / mm（抓取窗口） & 铰孔 D / mm（抓取窗口）
+4 & [3.68,\ 3.72] & [3.98,\ 4.02]
+5 & [4.68,\ 4.72] & [4.98,\ 5.02]
+6 & [5.68,\ 5.72] & [5.98,\ 6.02]
+8 & [7.68,\ 7.72] & [7.98,\ 8.02]
+10 & [9.68,\ 9.72] & [9.98,\ 10.02]
+12 & [11.68,\ 11.72] & [11.98,\ 12.02]
+16 & [15.68,\ 15.72] & [15.98,\ 16.02]
+20 & [19.68,\ 19.72] & [19.98,\ 20.02]
+```
+
+## 4.0 03_Hole_Making 规则：2.1_Spot_Drilling_All（示例）
+
+**提示：** 你们环境已验证：**Application Criteria 不支持 If/Then**，建议用“每行一个布尔条件（多行默认 AND）”来写。
+
+```text
+REM ---------------------------------------------------------
+REM Rule: spot drilling all holes (single operation)
+REM Range: D3.0 - D22.0
+REM Strategy: force one spot drill (example: D10)
+REM ---------------------------------------------------------
+
+REM Application Criteria
+mwf.DIAMETER_1 >= 3.0
+mwf.DIAMETER_1 <= 22.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter = 10.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "2.1_Spot_D10"
+```
+
+14
+
+## 4.1 03_Hole_Making：规则清单（按你的窗口表落地）
+
+**说明：** 下述代码块仅在默认模板对应的段落中“填肉”，不删除任何既有注释。
+
+### 3.1_Spot（定位钻，全孔单一程序）
+
+**定义：**
+
+- Name：`3.1_Spot`
+- OperationClass：`DrillBase -> HoleMaking -> SPOT_DRILLING`
+- Priority：`1`
+- MWF：`HOLE`（按你们环境的孔特征类）
+- LWF：`BLANK`
+- ToolClass：`SPOT_DRILL`
+
+**Conditions（按 NX12 默认模板“只填肉、不删注释”的写法）：**
+```text
+REM Application Criteria
+
+mwf.DIAMETER_1 >= 3.0
+mwf.DIAMETER_1 <= 22.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+
+tool.Diameter >= 9.5
+tool.Diameter <= 10.5
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+
+oper.name = "3.1_Spot"
+```
+
+### 3.2_Thread_Bottom（螺纹底孔：只钻不攻，8 条规则）
+
+**OperationClass：** `DrillBase -> HoleMaking -> DRILLING`
+
+**MWF/LWF/ToolClass：** `MWF=HOLE`, `LWF=BLANK`, `ToolClass=TWIST_DRILL`
+
+**规则列表（直径窗口 + 强制刀径）：**
+
+- `3.2_Thread_Bottom_D3p4`：$[3.10,\ 3.50]$，刀具 $ 3.4$
+- `3.2_Thread_Bottom_D4p3`：$[4.10,\ 4.50]$，刀具 $ 4.3$
+- `3.2_Thread_Bottom_D5p2`：$[5.10,\ 5.50]$，刀具 $ 5.2$
+- `3.2_Thread_Bottom_D6p9`：$[6.50,\ 6.98]$，刀具 $ 6.9$
+- `3.2_Thread_Bottom_D8p7`：$[8.10,\ 8.98]$，刀具 $ 8.7$
+- `3.2_Thread_Bottom_D10p5`：$[10.10,\ 10.80]$，刀具 $ 10.5$
+- `3.2_Thread_Bottom_D14p3`：$[13.50,\ 14.50]$，刀具 $ 14.3$
+- `3.2_Thread_Bottom_D17p8`：$[17.10,\ 17.98]$，刀具 $ 17.8$
+
+**Conditions 模板（以 D3p4 为例；其余规则只改“窗口 + 刀具直径筛选”）：**
+```text
+REM Application Criteria
+
+mwf.DIAMETER_1 >= 3.10
+mwf.DIAMETER_1 <= 3.50
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+
+tool.Diameter >= 3.35
+tool.Diameter <= 3.45
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+
+oper.name = "3.2_Thread_Bottom_D3p4"
+```
+
+**8 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+3.2\_Thread\_Bottom\_D3p4 & 2210
+3.2\_Thread\_Bottom\_D4p3 & 2220
+3.2\_Thread\_Bottom\_D5p2 & 2230
+3.2\_Thread\_Bottom\_D6p9 & 2240
+3.2\_Thread\_Bottom\_D8p7 & 2250
+3.2\_Thread\_Bottom\_D10p5 & 2260
+3.2\_Thread\_Bottom\_D14p3 & 2270
+3.2\_Thread\_Bottom\_D17p8 & 2280
+```
+
+**录库检查清单（Thread_Bottom）：**
+
+- 规则名、窗口和刀具直径一一对应，避免“名称是 D8p7 但窗口/刀具仍是旧值”。
+- 8 条规则都应属于同一 OperationClass（`DRILLING`）与 ToolClass（`TWIST_DRILL`）。
+- Priority 连续递增，便于排查冲突时快速定位候选规则。
+- 每条规则保留默认模板分段标题，不删 `REM ...` 与拒绝注释行。
+
+### 3.3_Thread_Through（螺纹过孔：5 条规则，先用精确窗口）
+
+**OperationClass：** `DrillBase -> HoleMaking -> DRILLING`
+
+**规则列表（精确抓取窗口）：**
+
+- `3.3_Thread_Through_D9`：$[8.98,\ 9.02]$，刀具 $ 9$
+- `3.3_Thread_Through_D11`：$[10.98,\ 11.02]$，刀具 $ 11$
+- `3.3_Thread_Through_D13`：$[12.98,\ 13.02]$，刀具 $ 13$
+- `3.3_Thread_Through_D17`：$[16.98,\ 17.02]$，刀具 $ 17$
+- `3.3_Thread_Through_D21`：$[20.98,\ 21.02]$，刀具 $ 21$
+
+**完整 Conditions（5 条可直接复制到 MKE）：**
+```text
+REM ----- 3.3_Thread_Through_D9 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 8.98
+mwf.DIAMETER_1 <= 9.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.95
+tool.Diameter <= 9.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.3_Thread_Through_D9"
+
+REM ----- 3.3_Thread_Through_D11 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 10.98
+mwf.DIAMETER_1 <= 11.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 10.95
+tool.Diameter <= 11.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.3_Thread_Through_D11"
+
+REM ----- 3.3_Thread_Through_D13 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 12.98
+mwf.DIAMETER_1 <= 13.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 12.95
+tool.Diameter <= 13.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.3_Thread_Through_D13"
+
+REM ----- 3.3_Thread_Through_D17 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 16.98
+mwf.DIAMETER_1 <= 17.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 16.95
+tool.Diameter <= 17.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.3_Thread_Through_D17"
+
+REM ----- 3.3_Thread_Through_D21 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 20.98
+mwf.DIAMETER_1 <= 21.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 20.95
+tool.Diameter <= 21.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.3_Thread_Through_D21"
+```
+
+**批量建规则参数表（5 条）：**
+```text
+p{0.36}|>{}p{0.24}|>{}p{0.24}|}
+规则名 & Application Criteria（mwf.DIAMETER\_1） & Tool Attributes（tool.Diameter）
+3.3\_Thread\_Through\_D9 & [8.98,\ 9.02] & [8.95,\ 9.05]
+3.3\_Thread\_Through\_D11 & [10.98,\ 11.02] & [10.95,\ 11.05]
+3.3\_Thread\_Through\_D13 & [12.98,\ 13.02] & [12.95,\ 13.05]
+3.3\_Thread\_Through\_D17 & [16.98,\ 17.02] & [16.95,\ 17.05]
+3.3\_Thread\_Through\_D21 & [20.98,\ 21.02] & [20.95,\ 21.05]
+```
+
+**5 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+3.3\_Thread\_Through\_D9 & 2310
+3.3\_Thread\_Through\_D11 & 2320
+3.3\_Thread\_Through\_D13 & 2330
+3.3\_Thread\_Through\_D17 & 2340
+3.3\_Thread\_Through\_D21 & 2350
+```
+
+**录库检查清单（Thread_Through）：**
+
+- 规则窗口保持窄窗，避免与 Thread Bottom 窗口重叠导致双命中。
+- Tool Attributes 推荐保持目标直径附近窄窗（如 $ 0.05$），便于稳定匹配刀具。
+- 5 条规则统一 OperationClass（`DRILLING`）与 ToolClass（钻削类）。
+- Priority 连续递增，便于冲突排查与版本对比。
+
+### 3.4_Pin_Hole（销孔：钻+铰，留量 +0.3，每孔径两条）
+
+**钻（预钻）OperationClass：**
+`DrillBase -> HoleMaking -> DRILLING`。
+
+**铰 OperationClass：**
+`DrillBase -> HoleMaking -> REAMING`（按你们系统的铰孔策略类名）。
+
+**抓取窗口：**
+
+- 预钻目标 $D-0.3$：$[3.68,\ 3.72]$、$[4.68,\ 4.72]$、$[5.68,\ 5.72]$、$[7.68,\ 7.72]$、$[9.68,\ 9.72]$、$[11.68,\ 11.72]$、$[15.68,\ 15.72]$、$[19.68,\ 19.72]$。
+- 铰孔 $D$：$[3.98,\ 4.02]$、$[4.98,\ 5.02]$、$[5.98,\ 6.02]$、$[7.98,\ 8.02]$、$[9.98,\ 10.02]$、$[11.98,\ 12.02]$、$[15.98,\ 16.02]$、$[19.98,\ 20.02]$。
+
+**完整 Conditions（16 条可直接复制到 MKE）：**
+```text
+REM ----- 3.4_Pin_Pre_D4 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 3.68
+mwf.DIAMETER_1 <= 3.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 3.95
+tool.Diameter <= 4.05
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D4"
+
+REM ----- 3.4_Pin_Ream_D4 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 3.98
+mwf.DIAMETER_1 <= 4.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 3.98
+tool.Diameter <= 4.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D4"
+
+REM ----- 3.4_Pin_Pre_D5 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 4.68
+mwf.DIAMETER_1 <= 4.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 4.65
+tool.Diameter <= 4.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D5"
+
+REM ----- 3.4_Pin_Ream_D5 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 4.98
+mwf.DIAMETER_1 <= 5.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 4.98
+tool.Diameter <= 5.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D5"
+
+REM ----- 3.4_Pin_Pre_D6 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 5.68
+mwf.DIAMETER_1 <= 5.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.65
+tool.Diameter <= 5.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D6"
+
+REM ----- 3.4_Pin_Ream_D6 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 5.98
+mwf.DIAMETER_1 <= 6.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.98
+tool.Diameter <= 6.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D6"
+
+REM ----- 3.4_Pin_Pre_D8 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 7.68
+mwf.DIAMETER_1 <= 7.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 7.65
+tool.Diameter <= 7.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D8"
+
+REM ----- 3.4_Pin_Ream_D8 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 7.98
+mwf.DIAMETER_1 <= 8.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 7.98
+tool.Diameter <= 8.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D8"
+
+REM ----- 3.4_Pin_Pre_D10 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 9.68
+mwf.DIAMETER_1 <= 9.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 9.65
+tool.Diameter <= 9.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D10"
+
+REM ----- 3.4_Pin_Ream_D10 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 9.98
+mwf.DIAMETER_1 <= 10.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 9.98
+tool.Diameter <= 10.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D10"
+
+REM ----- 3.4_Pin_Pre_D12 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 11.68
+mwf.DIAMETER_1 <= 11.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 11.65
+tool.Diameter <= 11.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D12"
+
+REM ----- 3.4_Pin_Ream_D12 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 11.98
+mwf.DIAMETER_1 <= 12.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 11.98
+tool.Diameter <= 12.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D12"
+
+REM ----- 3.4_Pin_Pre_D16 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 15.68
+mwf.DIAMETER_1 <= 15.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 15.65
+tool.Diameter <= 15.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D16"
+
+REM ----- 3.4_Pin_Ream_D16 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 15.98
+mwf.DIAMETER_1 <= 16.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 15.98
+tool.Diameter <= 16.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D16"
+
+REM ----- 3.4_Pin_Pre_D20 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 19.68
+mwf.DIAMETER_1 <= 19.72
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 19.65
+tool.Diameter <= 19.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D20"
+
+REM ----- 3.4_Pin_Ream_D20 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 19.98
+mwf.DIAMETER_1 <= 20.02
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 19.98
+tool.Diameter <= 20.02
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D20"
+```
+
+**批量建规则参数表（销孔 D=4/5/6/8/10/12/16/20）：**
+```text
+p{0.20}|>{}p{0.35}|>{}p{0.35}|}
+成品孔径 D / mm & 预钻窗口（D-0.3） & 铰孔窗口（D）
+4 & [3.68,\ 3.72] & [3.98,\ 4.02]
+5 & [4.68,\ 4.72] & [4.98,\ 5.02]
+6 & [5.68,\ 5.72] & [5.98,\ 6.02]
+8 & [7.68,\ 7.72] & [7.98,\ 8.02]
+10 & [9.68,\ 9.72] & [9.98,\ 10.02]
+12 & [11.68,\ 11.72] & [11.98,\ 12.02]
+16 & [15.68,\ 15.72] & [15.98,\ 16.02]
+20 & [19.68,\ 19.72] & [19.98,\ 20.02]
+```
+
+**16 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+3.4\_Pin\_Pre\_D4 & 2110
+3.4\_Pin\_Ream\_D4 & 3110
+3.4\_Pin\_Pre\_D5 & 2120
+3.4\_Pin\_Ream\_D5 & 3120
+3.4\_Pin\_Pre\_D6 & 2130
+3.4\_Pin\_Ream\_D6 & 3130
+3.4\_Pin\_Pre\_D8 & 2140
+3.4\_Pin\_Ream\_D8 & 3140
+3.4\_Pin\_Pre\_D10 & 2150
+3.4\_Pin\_Ream\_D10 & 3150
+3.4\_Pin\_Pre\_D12 & 2160
+3.4\_Pin\_Ream\_D12 & 3160
+3.4\_Pin\_Pre\_D16 & 2170
+3.4\_Pin\_Ream\_D16 & 3170
+3.4\_Pin\_Pre\_D20 & 2180
+3.4\_Pin\_Ream\_D20 & 3180
+```
+
+**录库检查清单（Pin Hole）：**
+
+- Pre 与 Ream 必须同孔径成对存在，命名仅后缀不同（`Pre`/`Ream`）。
+- Ream 的优先级必须高于同孔径 Pre（确保工序链路可被正确接续）。
+- 每条规则保留默认模板分段标题，不删除 `REM ...` 与拒绝注释行。
+- ToolClass 与 OperationClass 对齐：Pre 用钻削类、Ream 用铰孔类。
+
+### 3.5_Large_Hole（大孔/异形孔）
+
+**说明：** 圆孔 $D>21$ 可走孔铣（Hole Milling）策略；方孔/条孔建议走型腔/轮廓类铣削策略（不适合用钻削规则去覆盖）。
+
+## 统一优先级总表（3.1\~3.5）
+
+**建议分带：** Spot=1000 段；Thread Bottom=2200 段；Thread Through=2300 段；Pin Pre=2100 段；Pin Ream=3100 段；兜底人工检查规则使用最低优先级。
+
+```text
+模块 & 规则数量 & Priority 建议区间
+3.1\_Spot & 1 & 1100
+3.2\_Thread\_Bottom & 8 & 2210\~2280
+3.3\_Thread\_Through & 5 & 2310\~2350
+3.4\_Pin\_Pre & 8 & 2110\~2180
+3.4\_Pin\_Ream & 8 & 3110\~3180
+3.5\_Large\_Hole & 1\~N & 3200+
+Fallback\_ManualCheck & 1 & 100
+```
+
+**落地规则：**
+
+- 同一特征类型下，优先级越高越先尝试；命中则不再尝试低优先级同类规则。
+- Ream 优先级应高于对应 Pre，确保序列条件满足时优先生成精加工路径。
+- Fallback 必须最低，避免吞掉本应由专用规则处理的特征。
+
+## 5. 04_Chamfer：倒角库（可选但建议标准化）
+
+**目标：** 对孔口倒角与外轮廓倒角建立统一规则，减少人工补刀与漏倒角。
+
+### 1) 推荐规则清单（板类通用）
+
+```text
+Rule Name（规则名） & OperationClass（建议） & Priority（建议）
+4.1\_Hole\_Chamfer\_C0p5 & ChamferMilling / CHAMFER\_MILL & 3310
+4.2\_Hole\_Chamfer\_C1p0 & ChamferMilling / CHAMFER\_MILL & 3320
+4.3\_Outer\_Chamfer\_General & ChamferMilling / CHAMFER\_MILL & 3330
+4.4\_Deburr\_Light\_Pass & ChamferMilling / CHAMFER\_MILL & 3340
+```
+
+### 2) 规则模板（4.1_Hole_Chamfer_C0p5）
+
+```text
+REM Application Criteria
+mwf.DIAMETER_1 >= 3.0
+mwf.DIAMETER_1 <= 20.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.0
+tool.Diameter <= 16.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "4.1_Hole_Chamfer_C0p5"
+```
+
+**落地要点：**
+
+- 倒角建议在孔加工与轮廓精加工之后执行，避免后续工序二次破坏倒角面。
+- 若现场主要目的是去毛刺，优先使用 `4.4_Deburr_Light_Pass` 降低切削负载。
+- 对关键装配孔建议保持倒角规则与孔径窗口绑定，避免过大倒角影响配合。
+
+### 3) 4.1\~4.4 完整 Conditions（可直接复制到 MKE）
+
+```text
+REM ----- 4.1_Hole_Chamfer_C0p5 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 3.0
+mwf.DIAMETER_1 <= 20.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 5.0
+tool.Diameter <= 16.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "4.1_Hole_Chamfer_C0p5"
+
+REM ----- 4.2_Hole_Chamfer_C1p0 -----
+REM Application Criteria
+mwf.DIAMETER_1 >= 6.0
+mwf.DIAMETER_1 <= 30.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.0
+tool.Diameter <= 20.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "4.2_Hole_Chamfer_C1p0"
+
+REM ----- 4.3_Outer_Chamfer_General -----
+REM Application Criteria
+mwf.EDGE_LENGTH >= 20.0
+mwf.EDGE_LENGTH <= 5000.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.0
+tool.Diameter <= 25.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "4.3_Outer_Chamfer_General"
+
+REM ----- 4.4_Deburr_Light_Pass -----
+REM Application Criteria
+mwf.EDGE_LENGTH >= 5.0
+mwf.EDGE_LENGTH <= 8000.0
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 6.0
+tool.Diameter <= 20.0
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "4.4_Deburr_Light_Pass"
+```
+
+**批量建规则参数表（Chamfer）：**
+```text
+p{0.36}|>{}p{0.24}|>{}p{0.24}|}
+Rule Name（规则名） & Application Criteria（示例） & Tool Attributes（tool.Diameter）
+4.1\_Hole\_Chamfer\_C0p5 & D:[3,20] & [5,16]
+4.2\_Hole\_Chamfer\_C1p0 & D:[6,30] & [8,20]
+4.3\_Outer\_Chamfer\_General & EDGE:[20,5000] & [8,25]
+4.4\_Deburr\_Light\_Pass & EDGE:[5,8000] & [6,20]
+```
+
+**4 条规则命名与优先级建议（可直接录库）：**
+```text
+Rule Name（规则名） & Priority（建议）
+4.1\_Hole\_Chamfer\_C0p5 & 3310
+4.2\_Hole\_Chamfer\_C1p0 & 3320
+4.3\_Outer\_Chamfer\_General & 3330
+4.4\_Deburr\_Light\_Pass & 3340
+```
+
+**录库检查清单（Chamfer）：**
+
+
+---
+
+## 附录B: XML 转换与插入指南
+
+### B.1 从文本 Conditions 到 XML 的转换
+
+**方法 1: 使用 Python 脚本自动化(推荐)**
+
+项目提供 `generate_rules_xml.py` 脚本,可自动将规则定义转换为 XML 格式并插入到 `machining_knowledge.xml`。
+
+**基本用法**:
+```python
+from generate_rules_xml import create_rule_element, insert_rule_to_library
+
+rule_data = {
+    'name': '3.2_Thread_Bottom_D8p7',
+    'operation_class': 'hole_making.DRILLING',
+    'priority': 2250,
+    'mwf': 'HOLE',
+    'lwf': 'BLANK',
+    'tool_class': 'TWIST_DRILL',
+    'conditions': {
+        'application': ['mwf.DIAMETER_1 >= 8.10', 'mwf.DIAMETER_1 <= 8.98'],
+        'tool': ['tool.Diameter >= 8.65', 'tool.Diameter <= 8.75'],
+        'operation': ['oper.name = "3.2_Thread_Bottom_D8p7"']
+    }
+}
+
+insert_rule_to_library('machining_knowledge.xml', 'Factory_Plate_General/03_Hole_Making', rule_data)
+```
+
+**方法 2: 手动构造 XML**
+
+XML 结构模板:
+```xml
+<Rule Name="3.2_Thread_Bottom_D8p7" Priority="2250" OperationClass="hole_making.DRILLING">
+  <MoreWorkedFeature Type="HOLE"/>
+  <LessWorkedFeature Type="BLANK"/>
+  <ToolClass>TWIST_DRILL</ToolClass>
+  <Conditions>
+    <ApplicationCriteria>
+      <Condition>mwf.DIAMETER_1 &gt;= 8.10</Condition>
+      <Condition>mwf.DIAMETER_1 &lt;= 8.98</Condition>
+    </ApplicationCriteria>
+    <ToolAttributes>
+      <Condition>tool.Diameter &gt;= 8.65</Condition>
+      <Condition>tool.Diameter &lt;= 8.75</Condition>
+    </ToolAttributes>
+    <LessWorkedFeatureAttributes/>
+    <OperationAttributes>
+      <Assignment>oper.name = "3.2_Thread_Bottom_D8p7"</Assignment>
+    </OperationAttributes>
+  </Conditions>
+</Rule>
+```
+
+**关键注意事项**:
+- 特殊字符转义: `>=` → `&gt;=`, `<=` → `&lt;=`
+- 文件编码必须为 UTF-8
+- 确保同一库内规则名称唯一
+- 保留所有 REM 注释段落结构
+
+### B.2 插入步骤
+
+1. **备份原文件**: `Copy-Item machining_knowledge.xml machining_knowledge_backup.xml`
+2. **定位插入位置**: 在 XML 中找到目标 `<Library>` 节点
+3. **插入规则元素**: 粘贴构造好的 `<Rule>` 元素
+4. **验证格式**: 使用 Python 的 `xml.etree.ElementTree` 验证
+5. **在 NX 中测试**: 加载规则库验证是否正确识别
+
+### B.3 常见问题
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| 规则详情空白 | XML 格式不符合 Schema | 对比导出规则,确保结构一致 |
+| 导入失败 | 编码问题 | 使用 UTF-8 编码保存 |
+| 规则不命中 | MWF/LWF 类型错误 | 检查特征类型映射表 |
+| 双命中 | 优先级或窗口重叠 | 调整 Priority 或缩小窗口 |
+
+---
+
+**文档维护**: 工艺工程团队  
+**最后更新**: 2026-04-28  
 **状态**: ✅ 生产就绪 (Production Ready)
