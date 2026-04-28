@@ -1,0 +1,808 @@
+{
+    "constants": {
+        "Achievable_IT_Class_BORE_Lower": {
+            "explanation": "The lower boundary of the reachable IT quality class when using a BORING BAR",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "6",
+                    "ValueInch": "6"
+                }
+            ]
+        },
+        "Achievable_IT_Class_BORE_Upper": {
+            "explanation": "The upper boundary of the reachable IT quality class when using a BORING BAR",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "10",
+                    "ValueInch": "10"
+                }
+            ]
+        },
+        "Achievable_IT_Class_DRILL_Lower": {
+            "explanation": "The lower boundary of the reachable IT quality class when using a DRILL",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "11",
+                    "ValueInch": "11"
+                }
+            ]
+        },
+        "Achievable_IT_Class_DRILL_Upper": {
+            "explanation": "The upper boundary of the reachable IT quality class when using a DRILL. A value 14 is more realistic but that would result in many features not machined since the default upper and lower boundaries are 0.5 mm and that results in IT16.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "16",
+                    "ValueInch": "16"
+                }
+            ]
+        },
+        "Achievable_IT_Class_MILL_Lower": {
+            "explanation": "The lower boundary of the reachable IT quality class when using a MILL",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "9",
+                    "ValueInch": "9"
+                }
+            ]
+        },
+        "Achievable_IT_Class_MILL_Upper": {
+            "explanation": "The upper boundary of the reachable IT quality class when using a MILL.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "16",
+                    "ValueInch": "16"
+                }
+            ]
+        },
+        "Achievable_IT_Class_REAM_Lower": {
+            "explanation": "The lower boundary of the reachable IT quality class when using a REAMER",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "5",
+                    "ValueInch": "5"
+                }
+            ]
+        },
+        "Achievable_IT_Class_REAM_Upper": {
+            "explanation": "The upper boundary of the reachable IT quality class when using a REAMER",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "10",
+                    "ValueInch": "10"
+                }
+            ]
+        },
+        "Achievable_Roughness_BORE_Lower": {
+            "explanation": "The lower boundary of the reachable roughness when using a BORING BAR (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.8",
+                    "ValueInch": "32"
+                }
+            ]
+        },
+        "Achievable_Roughness_BORE_Upper": {
+            "explanation": "The upper boundary of the reachable roughness when using a BORING BAR (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "12.5",
+                    "ValueInch": "500"
+                }
+            ]
+        },
+        "Achievable_Roughness_DRILL_Lower": {
+            "explanation": "The lower boundary of the reachable roughness when using a DRILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.8",
+                    "ValueInch": "32"
+                }
+            ]
+        },
+        "Achievable_Roughness_DRILL_Upper": {
+            "explanation": "The upper boundary of the reachable roughness when using a DRILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "12.5",
+                    "ValueInch": "500"
+                }
+            ]
+        },
+        "Achievable_Roughness_DRILL_Upper_str": {
+            "explanation": "The upper boundary of the reachable roughness when using a DRILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Ra = 12.5 micrometer",
+                    "ValueInch": "Ra  500 micro inch"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_Lower": {
+            "explanation": "The lower boundary of the reachable roughness when using a END MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.4",
+                    "ValueInch": "0.400000"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_Lower_str": {
+            "explanation": "The lower boundary of the reachable roughness when using a END MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Ra 0.4 micrometer",
+                    "ValueInch": "Ra 16 micro inch"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_Upper": {
+            "explanation": "The upper boundary of the reachable roughness when using a MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "25",
+                    "ValueInch": "1000"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_Upper_str": {
+            "explanation": "The upper boundary of the reachable roughness when using a MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Ra 25 micrometer",
+                    "ValueInch": "Ra 1000 micro inch"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_rough": {
+            "explanation": "Treshold value for Finishing when using an END MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "6.3",
+                    "ValueInch": "250"
+                }
+            ]
+        },
+        "Achievable_Roughness_MILL_rough_str": {
+            "explanation": "Treshold value for Finishing when using an END MILL (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Ra = 6.3 micrometer",
+                    "ValueInch": "Ra 250 micro inch"
+                }
+            ]
+        },
+        "Achievable_Roughness_REAM_Lower": {
+            "explanation": "The lower boundary of the reachable roughness when using a REAMER (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.4",
+                    "ValueInch": "16"
+                }
+            ]
+        },
+        "Achievable_Roughness_REAM_Upper": {
+            "explanation": "The upper boundary of the reachable roughness when using a REAMER (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "3.2",
+                    "ValueInch": "125"
+                }
+            ]
+        },
+        "Center_Chamfer_Limit": {
+            "explanation": "Diameters until this value are chamfered by the previous spot drilling operation.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "12",
+                    "ValueInch": "0.5"
+                }
+            ]
+        },
+        "CounterMillFactor": {
+            "explanation": "Ratio larger/smaller diameter used to prevent selecting a very small tool for a big counterbore.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "3",
+                    "ValueInch": "3.000000"
+                }
+            ]
+        },
+        "Depth_Dia_Ratio_Limit": {
+            "explanation": "When Depth/Diameter smaller than this value, gun drilling is rejected.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "5",
+                    "ValueInch": "6"
+                }
+            ]
+        },
+        "LWF_Allowance_Boring": {
+            "explanation": "The blank stock for a boring operation.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.04"
+                }
+            ]
+        },
+        "LWF_Allowance_Mill_Finish_Bottom": {
+            "explanation": "The blank stock at the bottom for a milling operation.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.04"
+                }
+            ]
+        },
+        "LWF_Allowance_Mill_Finish_Wall": {
+            "explanation": "The blank stock at the side for a milling operation.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.04"
+                }
+            ]
+        },
+        "LWF_Allowance_Reaming": {
+            "explanation": "The blank stock for a reaming operation.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.04"
+                }
+            ]
+        },
+        "LWF_DEPTH_LO": {
+            "explanation": "Lower limit depth deviation of the in process workpiece.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "-0.2",
+                    "ValueInch": "-0.01"
+                }
+            ]
+        },
+        "LWF_DEPTH_UP": {
+            "explanation": "Upper limit depth deviation of the in process workpiece.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.2",
+                    "ValueInch": "0.01"
+                }
+            ]
+        },
+        "LWF_DIAM_LO": {
+            "explanation": "Lower limit diameter deviation of the in process workpiece.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "-0.2",
+                    "ValueInch": "-0.01"
+                }
+            ]
+        },
+        "LWF_DIAM_UP": {
+            "explanation": "Upper limit diameter deviation of the in process workpiece.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.2",
+                    "ValueInch": "0.01"
+                }
+            ]
+        },
+        "LWF_Predrill_Factor_Lower": {
+            "explanation": "Multiply the final diameter with this value to obtain the lower boundary of the pre-drilled hole. ",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.2",
+                    "ValueInch": "0.200000"
+                }
+            ]
+        },
+        "LWF_Predrill_Factor_Upper": {
+            "explanation": "Multiply the final diameter with this value to obtain the upper boundary of the pre-drilled hole size. ",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.65",
+                    "ValueInch": "0.650000"
+                }
+            ]
+        },
+        "Large_Roughness_Value_str": {
+            "explanation": "Use this constant to assign to the LWF to prevent finishing (micrometer and microinch)",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Ra 25 micrometer",
+                    "ValueInch": "Ra 1000 micro inch"
+                }
+            ]
+        },
+        "POG_CBore": {
+            "explanation": "Program order group where the counterboring operations will land.\n",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "COUNTERBORE",
+                    "ValueInch": "COUNTERBORE"
+                }
+            ]
+        },
+        "POG_CSink": {
+            "explanation": "Program order group where the chamfering operations will land.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "COUNTERSINK",
+                    "ValueInch": "COUNTERSINK"
+                }
+            ]
+        },
+        "POG_CounterMill": {
+            "explanation": "Program order group where the counter milling  operations will land.\n",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "MILL_SEMI_FINISH",
+                    "ValueInch": "MILL_SEMI_FINISH"
+                }
+            ]
+        },
+        "POG_Debur": {
+            "explanation": "Program order group where the final deburring operations will land.\n",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "DEBUR",
+                    "ValueInch": "DEBUR"
+                }
+            ]
+        },
+        "POG_Drill": {
+            "explanation": "Program order group where the Drill operations will land.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "DRILL",
+                    "ValueInch": "DRILL"
+                }
+            ]
+        },
+        "POG_SpotDrill": {
+            "explanation": "Default Program Order Group for spot drilling operations",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "SPOT_DRILL",
+                    "ValueInch": "SPOT_DRILL"
+                }
+            ]
+        },
+        "POG_Tap": {
+            "explanation": "Program order group where the TAP operations will land.\n",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "TAP",
+                    "ValueInch": "TAP"
+                }
+            ]
+        },
+        "POG_ThreadMill": {
+            "explanation": "Program order group where the thread mill operations will land.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "MILL_FINISH",
+                    "ValueInch": "MILL_FINISH"
+                }
+            ]
+        },
+        "PointAngle_TwistDrill": {
+            "explanation": "Point Angle will generally be dependent of the workpiece material.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "118",
+                    "ValueInch": "118"
+                }
+            ]
+        },
+        "Pre_Drill_Limit": {
+            "explanation": "Holes with a diameter up to this value can be drilled at once. Larger holes need be pre-drilled.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "12",
+                    "ValueInch": "0.5"
+                }
+            ]
+        },
+        "Slanted_Surface_Angle_Drill_Limit": {
+            "explanation": "Holes in a slanted surface with angle larger than this value require a spot facing operation first.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "3",
+                    "ValueInch": "3"
+                }
+            ]
+        },
+        "Small_Value": {
+            "explanation": "Used to test on zero values.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.001",
+                    "ValueInch": "0.0001"
+                }
+            ]
+        },
+        "Smallest_Large_Endmill_Diameter": {
+            "explanation": "Used to have a lower boundery for the tool query for counter milling operations.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "25",
+                    "ValueInch": "25.000000"
+                }
+            ]
+        },
+        "Tap_Predrill_Tolerance_Factor": {
+            "explanation": "Tap_Predrill_Tolerance_Factor is a multiplier for the predrill hole upper limit.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "0.05",
+                    "ValueInch": "0.050000"
+                }
+            ]
+        },
+        "Thru_Hole_Clearance": {
+            "explanation": "Determines how deep the toolpath goes thru the hole.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1.5",
+                    "ValueInch": "0.05"
+                }
+            ]
+        },
+        "bool_Always_Chamfer_Features_Yes1_No0": {
+            "explanation": "When value =1 then features will be chamfered also if no chamfer in the CAD model.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0"
+                }
+            ]
+        },
+        "bool_Check_PointAngle_Twist_Drill_Yes1_No0": {
+            "explanation": "When value = 1, the point angle of the drill must match the tip angle of the feature.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "1"
+                }
+            ]
+        },
+        "bool_Use_Spot_Drill_Yes1_No0": {
+            "explanation": "When value = 1 then a spot drilling operation is generated before drilling.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "1"
+                }
+            ]
+        },
+        "geo_Angle_Top_Chamfer": {
+            "explanation": "The chamfer angle for constructed chamfers.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "45",
+                    "ValueInch": "45"
+                }
+            ]
+        },
+        "geo_Angle_Top_Chamfer_Tol": {
+            "explanation": "This is the tolerance we assume when selecting a tool for creating a chamfer.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1.0",
+                    "ValueInch": "1.000000"
+                }
+            ]
+        },
+        "geo_Depth_Top_Chamfer": {
+            "explanation": "The chamfer depth of constructed chamfers.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.01"
+                }
+            ]
+        },
+        "value_1_mm": {
+            "explanation": "One millimeter",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1.0",
+                    "ValueInch": "0.03937007874015748031496062992126"
+                }
+            ]
+        },
+        "op_Added_Retract_Distance_on_Tool_Axis_Change": {
+            "explanation": "Add retract Distance on Tool Axis Change",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "50",
+                    "ValueInch": "2"
+                }
+            ]
+        },
+        "op_Clearance_Distance": {
+            "explanation": "Clearance_Distance",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "2",
+                    "ValueInch": "0.1"
+                }
+            ]
+        },
+        "op_Engage_Radius": {
+            "explanation": "Engage_Auto_Arc_Radius is the entry/exit radius for the HOLE_MILL processor.",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "1",
+                    "ValueInch": "0.039370"
+                }
+            ]
+        },
+        "op_Engage_Ramp_Angle": {
+            "explanation": "NCM engage and retract parameter",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "15",
+                    "ValueInch": "15.000000"
+                }
+            ]
+        },
+        "op_Retract_Distance": {
+            "explanation": "Retract_Distance",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "5",
+                    "ValueInch": "0.2"
+                }
+            ]
+        },
+        "op_Vertical_Clearance_Distance": {
+            "explanation": "Vertical Clearance_Distance",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "2",
+                    "ValueInch": "0.1"
+                }
+            ]
+        },
+        "Thread_Method": {
+            "explanation": "",
+            "values": [
+                {
+                    "Material": "all",
+                    "Value": "Cut",
+                    "ValueInch": null
+                }
+            ]
+        }
+    },
+    "rule_roots": [
+        "16-07-2015__16_15_19_7784_20",
+        "03-02-2026__07_47_24_15844_0"
+    ],
+    "recognition_rules": [
+        "OOTB_CustomerFeature",
+        "21-07-2016__12_14_39_13588_0",
+        "OOTB_BOSSES",
+        "OOTB_CORNER_NOTCHES",
+        "OOTB_GROOVES",
+        "OOTB_HOLES",
+        "OOTB_POCKETS",
+        "OOTB_SIDE_NOTCHES",
+        "OOTB_SLOTS",
+        "OOTB_STEPS",
+        "OOTB_SURFACES",
+        "OOTB_TURNING",
+        "OOTB_WEDM",
+        "OOTB_BOSS_ROUND_STRAIGHT",
+        "OOTB_BOSS_ROUND_STRAIGHT_BR",
+        "OOTB_BOSS_ROUND_STRAIGHT_TC",
+        "OOTB_BOSS_ROUND_STRAIGHT_TC_BR",
+        "OOTB_BOSS_ROUND_STRAIGHT_TR",
+        "OOTB_BOSS_ROUND_STRAIGHT_TR_BR",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD_BR",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD_TC",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD_TC_BR",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD_TR",
+        "OOTB_BOSS_ROUND_STRAIGHT_THREAD_TR_BR",
+        "OOTB_BOSS_RECTANGULAR_STRAIGHT",
+        "OOTB_CORNER_NOTCH_RECTANGULAR",
+        "OOTB_CORNER_NOTCH_ROUND_CONCAVE",
+        "OOTB_CORNER_NOTCH_STRAIGHT",
+        "OOTB_CORNER_NOTCH_U_SHAPED",
+        "OOTB_GROOVE_AX_CIRCULAR_RECT",
+        "OOTB_GROOVE_INS_RAD_RECT",
+        "OOTB_HOLE_FREE_SHAPED_STRAIGHT",
+        "OOTB_HOLE_OBROUND_STRAIGHT",
+        "OOTB_HOLE_RECTANGULAR_STRAIGHT",
+        "OOTB_HOLE_ROUND_TAPERED",
+        "OOTB_HOLE_ROUND_INTERRUPT_STRAIGHT_1",
+        "OOTB_HOLE_OBROUND_CURVED_STRAIGHT",
+        "OOTB_POCKET_FREE_SHAPED_STRAIGHT",
+        "OOTB_POCKET_OBROUND_STRAIGHT",
+        "OOTB_POCKET_RECTANGULAR_STRAIGHT",
+        "OOTB_POCKET_ROUND_TAPERED",
+        "OOTB_POCKET_OBROUND_CURVED_STRAIGHT",
+        "OOTB_POCKET_CLOSED",
+        "OOTB_POCKET_OPEN",
+        "OOTB_SIDE_NOTCH_RECTANGULAR",
+        "OOTB_SIDE_NOTCH_ROUND_CONCAVE",
+        "OOTB_SIDE_NOTCH_U_SHAPED",
+        "OOTB_SLOT_90_DEGREE",
+        "OOTB_SLOT_DOVE_TAIL",
+        "OOTB_SLOT_OBROUND",
+        "OOTB_SLOT_PARTIAL_OBROUND",
+        "OOTB_SLOT_PARTIAL_RECTANGULAR",
+        "OOTB_SLOT_PARTIAL_ROUND",
+        "OOTB_SLOT_PARTIAL_U_SHAPED",
+        "OOTB_SLOT_RECTANGULAR",
+        "OOTB_SLOT_ROUND",
+        "OOTB_SLOT_T_SHAPED",
+        "OOTB_SLOT_UPSIDE_DOWN_DOVE_TAIL",
+        "OOTB_SLOT_U_SHAPED",
+        "OOTB_SLOT_V_SHAPED",
+        "OOTB_STEP1HOLE",
+        "OOTB_STEP1HOLE_THREAD",
+        "OOTB_STEP2HOLE",
+        "OOTB_STEP2HOLE_THREAD",
+        "OOTB_STEP3HOLE",
+        "OOTB_STEP3HOLE_THREAD",
+        "OOTB_STEP4HOLE",
+        "OOTB_STEP4HOLE_THREAD",
+        "OOTB_STEP5HOLE",
+        "OOTB_STEP5HOLE_THREAD",
+        "OOTB_STEP6HOLE",
+        "OOTB_STEP6HOLE_THREAD",
+        "OOTB_STEP6HOLE1",
+        "OOTB_STEP6HOLE1_THREAD",
+        "OOTB_STEP6HOLE2",
+        "OOTB_STEP6HOLE2_THREAD",
+        "OOTB_STEP5HOLE1",
+        "OOTB_STEP5HOLE1_THREAD",
+        "OOTB_STEP5HOLE2",
+        "OOTB_STEP5HOLE2_THREAD",
+        "OOTB_STEP4HOLE1",
+        "OOTB_STEP4HOLE1_THREAD",
+        "OOTB_STEP3HOLE1",
+        "OOTB_STEP3HOLE1_THREAD",
+        "OOTB_STEP1POCKET",
+        "OOTB_STEP1POCKET_THREAD",
+        "OOTB_STEP2POCKET",
+        "OOTB_STEP2POCKET_THREAD",
+        "OOTB_STEP3POCKET",
+        "OOTB_STEP3POCKET_THREAD",
+        "OOTB_STEP4POCKET",
+        "OOTB_STEP4POCKET_THREAD",
+        "OOTB_STEP5POCKET",
+        "OOTB_STEP5POCKET_THREAD",
+        "OOTB_STEP6POCKET",
+        "OOTB_STEP6POCKET_THREAD",
+        "OOTB_SURFACE_PLANAR",
+        "OOTB_SURFACE_PLANAR_RECTANGULAR",
+        "OOTB_SURFACE_PLANAR_ROUND",
+        "OOTB_TURNING_GROOVE_FACE",
+        "OOTB_TURNING_GROOVE_ID",
+        "OOTB_TURNING_GROOVE_OD",
+        "OOTB_WEDM_FREE_SHAPED_STRAIGHT",
+        "OOTB_WEDM_OBROUND_STRAIGHT",
+        "OOTB_WEDM_RECTANGULAR_STRAIGHT",
+        "OOTB_WEDM_ROUND_STRAIGHT",
+        "OOTB_IP_NXGroove_D_00",
+        "OOTB_IP_NXGroove_D_0R",
+        "OOTB_IP_NXGroove_D_R0",
+        "OOTB_IP_NXGroove_D_RR",
+        "OOTB_IP_NXGroove_U_0000",
+        "OOTB_IP_NXGroove_U_000R",
+        "OOTB_IP_NXGroove_U_00R0",
+        "OOTB_IP_NXGroove_U_00RR",
+        "OOTB_IP_NXGroove_U_0r00",
+        "OOTB_IP_NXGroove_U_0r0R",
+        "OOTB_IP_NXGroove_U_0rR0",
+        "OOTB_IP_NXGroove_U_0rRR",
+        "OOTB_IP_NXGroove_U_r000",
+        "OOTB_IP_NXGroove_U_r00R",
+        "OOTB_IP_NXGroove_U_r0R0",
+        "OOTB_IP_NXGroove_U_r0RR",
+        "OOTB_IP_NXGroove_U_rr00",
+        "OOTB_IP_NXGroove_U_rr0R",
+        "OOTB_IP_NXGroove_U_rrR0",
+        "OOTB_IP_NXGroove_U_rrRR",
+        "OOTB_IP_NXGrooveRadial_D_00",
+        "OOTB_IP_NXGrooveRadial_D_0R",
+        "OOTB_IP_NXGrooveRadial_D_R0",
+        "OOTB_IP_NXGrooveRadial_D_RR",
+        "OOTB_IP_NXGrooveRadial_U_0000",
+        "OOTB_IP_NXGrooveRadial_U_000R",
+        "OOTB_IP_NXGrooveRadial_U_00R0",
+        "OOTB_IP_NXGrooveRadial_U_00RR",
+        "OOTB_IP_NXGrooveRadial_U_0r00",
+        "OOTB_IP_NXGrooveRadial_U_0r0R",
+        "OOTB_IP_NXGrooveRadial_U_0rR0",
+        "OOTB_IP_NXGrooveRadial_U_0rRR",
+        "OOTB_IP_NXGrooveRadial_U_r000",
+        "OOTB_IP_NXGrooveRadial_U_r00R",
+        "OOTB_IP_NXGrooveRadial_U_r0R0",
+        "OOTB_IP_NXGrooveRadial_U_r0RR",
+        "OOTB_IP_NXGrooveRadial_U_rr00",
+        "OOTB_IP_NXGrooveRadial_U_rr0R",
+        "OOTB_IP_NXGrooveRadial_U_rrR0",
+        "OOTB_IP_NXGrooveRadial_U_rrRR",
+        "OOTB_IP_CylMill_Finish_FW",
+        "OOTB_IP_CylMill_StartDia_TC_1",
+        "OOTB_IP_CylMill_StartDia_TC_2",
+        "OOTB_IP_Drill_in_Cone",
+        "OOTB_IP_Drill_S1H",
+        "OOTB_IP_Drill_S1P",
+        "OOTB_IP_Drill_up_S1H",
+        "OOTB_IP_Drill_up_S1P",
+        "OOTB_IP_CounterSinking",
+        "OOTB_IP_CounterSinkingCone",
+        "OOTB_IP_CounterSinkingGE"
+    ]
+}

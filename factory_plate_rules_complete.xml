@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Data PpXmlVer="1.0">
+  <Objects>
+    <MachiningRuleLibrary Name="Factory_Plate_General" ExternalId="#Factory_Plate_General_Lib" Description="板类零件通用加工规则库 v2.0">
+      <NodeInfo>
+        <Id>819</Id>
+      </NodeInfo>
+      <MachiningRuleLibrary Name="01_Face_Milling" Description="面加工库">
+        <MachiningRule Name="1.1_Face_Top_Rough" ExternalId="#1.1_Face_Top_Rough" Priority="1210" OperationClass="face_milling.FACE_MILLING" MWF="PLANAR_FACE" LWF="BLANK" ToolClass="FACE_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.AREA &gt;= 400.0
+mwf.AREA &lt;= 200000.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 40.0
+tool.Diameter &lt;= 80.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "1.1_Face_Top_Rough"
+oper.description = "1.1_Face_Top_Rough"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="1.2_Face_Top_Finish" ExternalId="#1.2_Face_Top_Finish" Priority="1220" OperationClass="face_milling.FACE_MILLING" MWF="PLANAR_FACE" LWF="BLANK" ToolClass="FACE_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.AREA &gt;= 300.0
+mwf.AREA &lt;= 200000.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 32.0
+tool.Diameter &lt;= 63.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "1.2_Face_Top_Finish"
+oper.description = "1.2_Face_Top_Finish"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="1.3_Face_Bottom_Finish" ExternalId="#1.3_Face_Bottom_Finish" Priority="1230" OperationClass="face_milling.FACE_MILLING" MWF="PLANAR_FACE" LWF="BLANK" ToolClass="FACE_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.AREA &gt;= 300.0
+mwf.AREA &lt;= 200000.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 32.0
+tool.Diameter &lt;= 63.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "1.3_Face_Bottom_Finish"
+oper.description = "1.3_Face_Bottom_Finish"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="1.4_Face_ThinWall_LightCut" ExternalId="#1.4_Face_ThinWall_LightCut" Priority="1240" OperationClass="face_milling.FACE_MILLING" MWF="PLANAR_FACE" LWF="BLANK" ToolClass="FACE_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.AREA &gt;= 100.0
+mwf.AREA &lt;= 50000.0
+mwf.THICKNESS &lt;= 8.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 16.0
+tool.Diameter &lt;= 40.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "1.4_Face_ThinWall_LightCut"
+oper.description = "1.4_Face_ThinWall_LightCut"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+      </MachiningRuleLibrary>
+      <MachiningRuleLibrary Name="02_Pocket_Slot" Description="型腔与槽库">
+        <MachiningRule Name="2.1_Pocket_Rough_General" ExternalId="#2.1_Pocket_Rough_General" Priority="2410" OperationClass="cavity_milling.CAVITY_MILL" MWF="POCKET" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.DEPTH &gt;= 1.0
+mwf.DEPTH &lt;= 40.0
+mwf.R_min &gt;= 2.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 8.0
+tool.Diameter &lt;= 20.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.1_Pocket_Rough_General"
+oper.description = "2.1_Pocket_Rough_General"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="2.2_Pocket_Finish_Wall" ExternalId="#2.2_Pocket_Finish_Wall" Priority="2420" OperationClass="planar_milling.PROFILE" MWF="POCKET" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.DEPTH &gt;= 1.0
+mwf.DEPTH &lt;= 40.0
+mwf.WALL_ANGLE &lt;= 2.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 6.0
+tool.Diameter &lt;= 16.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.2_Pocket_Finish_Wall"
+oper.description = "2.2_Pocket_Finish_Wall"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="2.3_Pocket_Finish_Floor" ExternalId="#2.3_Pocket_Finish_Floor" Priority="2430" OperationClass="planar_milling.PLANAR_MILL" MWF="POCKET" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.DEPTH &gt;= 1.0
+mwf.DEPTH &lt;= 40.0
+mwf.BOTTOM_R &lt;= 1.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 6.0
+tool.Diameter &lt;= 20.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.3_Pocket_Finish_Floor"
+oper.description = "2.3_Pocket_Finish_Floor"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="2.4_Slot_Open_Rough" ExternalId="#2.4_Slot_Open_Rough" Priority="2440" OperationClass="slot_milling.SLOT_MILL" MWF="SLOT" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.WIDTH &gt;= 6.0
+mwf.WIDTH &lt;= 24.0
+mwf.DEPTH &lt;= 20.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 5.0
+tool.Diameter &lt;= 16.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.4_Slot_Open_Rough"
+oper.description = "2.4_Slot_Open_Rough"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="2.5_Slot_Closed_Finish" ExternalId="#2.5_Slot_Closed_Finish" Priority="2450" OperationClass="slot_milling.SLOT_MILL" MWF="SLOT" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.WIDTH &gt;= 4.0
+mwf.WIDTH &lt;= 16.0
+mwf.DEPTH &lt;= 20.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 3.0
+tool.Diameter &lt;= 10.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.5_Slot_Closed_Finish"
+oper.description = "2.5_Slot_Closed_Finish"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="2.6_Corner_Rest_Mill" ExternalId="#2.6_Corner_Rest_Mill" Priority="2460" OperationClass="rest_milling.REST_MILL" MWF="POCKET" LWF="BLANK" ToolClass="END_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.R_min &lt;= 2.0
+mwf.DEPTH &lt;= 30.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 2.0
+tool.Diameter &lt;= 8.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "2.6_Corner_Rest_Mill"
+oper.description = "2.6_Corner_Rest_Mill"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+      </MachiningRuleLibrary>
+      <MachiningRuleLibrary Name="03_Hole_Making" Description="孔加工库">
+        <MachiningRuleLibrary Name="3.1_Spot" Description="定位钻">
+          <MachiningRule Name="3.1_Spot_D10" ExternalId="#3.1_Spot_D10" Priority="1100" OperationClass="hole_making.SPOT_DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="CENTER_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 3.0
+mwf.DIAMETER_1 &lt;= 22.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter = 10.0</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.1_Spot_D10"
+oper.description = "3.1_Spot_D10"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+        </MachiningRuleLibrary>
+        <MachiningRuleLibrary Name="3.2_Thread_Bottom" Description="螺纹底孔">
+          <MachiningRule Name="3.2_Thread_Bottom_D3p4" ExternalId="#3.2_Thread_Bottom_D3p4" Priority="2210" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 3.1
+mwf.DIAMETER_1 &lt;= 3.5
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 3.35
+tool.Diameter &lt;= 3.4499999999999997</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D3p4"
+oper.description = "3.2_Thread_Bottom_D3p4"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D4p3" ExternalId="#3.2_Thread_Bottom_D4p3" Priority="2220" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 4.1
+mwf.DIAMETER_1 &lt;= 4.5
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 4.25
+tool.Diameter &lt;= 4.35</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D4p3"
+oper.description = "3.2_Thread_Bottom_D4p3"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D5p2" ExternalId="#3.2_Thread_Bottom_D5p2" Priority="2230" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 5.1
+mwf.DIAMETER_1 &lt;= 5.5
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 5.15
+tool.Diameter &lt;= 5.25</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D5p2"
+oper.description = "3.2_Thread_Bottom_D5p2"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D6p9" ExternalId="#3.2_Thread_Bottom_D6p9" Priority="2240" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 6.5
+mwf.DIAMETER_1 &lt;= 6.98
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 6.8500000000000005
+tool.Diameter &lt;= 6.95</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D6p9"
+oper.description = "3.2_Thread_Bottom_D6p9"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D8p7" ExternalId="#3.2_Thread_Bottom_D8p7" Priority="2250" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 8.1
+mwf.DIAMETER_1 &lt;= 8.98
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 8.649999999999999
+tool.Diameter &lt;= 8.75</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D8p7"
+oper.description = "3.2_Thread_Bottom_D8p7"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D10p5" ExternalId="#3.2_Thread_Bottom_D10p5" Priority="2260" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 10.1
+mwf.DIAMETER_1 &lt;= 10.8
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 10.45
+tool.Diameter &lt;= 10.55</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D10p5"
+oper.description = "3.2_Thread_Bottom_D10p5"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D14p3" ExternalId="#3.2_Thread_Bottom_D14p3" Priority="2270" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 13.5
+mwf.DIAMETER_1 &lt;= 14.5
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 14.25
+tool.Diameter &lt;= 14.350000000000001</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D14p3"
+oper.description = "3.2_Thread_Bottom_D14p3"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.2_Thread_Bottom_D17p8" ExternalId="#3.2_Thread_Bottom_D17p8" Priority="2280" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 17.1
+mwf.DIAMETER_1 &lt;= 17.98
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 17.75
+tool.Diameter &lt;= 17.85</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D17p8"
+oper.description = "3.2_Thread_Bottom_D17p8"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+        </MachiningRuleLibrary>
+        <MachiningRuleLibrary Name="3.3_Thread_Through" Description="螺纹过孔">
+          <MachiningRule Name="3.3_Thread_Through_D9" ExternalId="#3.3_Thread_Through_D9" Priority="2310" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="STEP1HOLE" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 8.98
+mwf.DIAMETER_1 &lt;= 9.02
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 8.95
+tool.Diameter &lt;= 9.05</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.3_Thread_Through_D9"
+oper.description = "3.3_Thread_Through_D9"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.3_Thread_Through_D11" ExternalId="#3.3_Thread_Through_D11" Priority="2320" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="STEP1HOLE" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 10.98
+mwf.DIAMETER_1 &lt;= 11.02
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 10.95
+tool.Diameter &lt;= 11.05</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.3_Thread_Through_D11"
+oper.description = "3.3_Thread_Through_D11"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.3_Thread_Through_D13" ExternalId="#3.3_Thread_Through_D13" Priority="2330" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="STEP1HOLE" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 12.98
+mwf.DIAMETER_1 &lt;= 13.02
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 12.95
+tool.Diameter &lt;= 13.05</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.3_Thread_Through_D13"
+oper.description = "3.3_Thread_Through_D13"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.3_Thread_Through_D17" ExternalId="#3.3_Thread_Through_D17" Priority="2340" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="STEP1HOLE" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 16.98
+mwf.DIAMETER_1 &lt;= 17.02
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 16.95
+tool.Diameter &lt;= 17.05</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.3_Thread_Through_D17"
+oper.description = "3.3_Thread_Through_D17"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+          <MachiningRule Name="3.3_Thread_Through_D21" ExternalId="#3.3_Thread_Through_D21" Priority="2350" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="STEP1HOLE" ToolClass="TWIST_DRILL" Description="">
+            <Conditions>
+              <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 20.98
+mwf.DIAMETER_1 &lt;= 21.02
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+              <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 20.95
+tool.Diameter &lt;= 21.05</ToolAttributes>
+              <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+              <OperationAttributes>REM Operation Attributes
+oper.name = "3.3_Thread_Through_D21"
+oper.description = "3.3_Thread_Through_D21"</OperationAttributes>
+            </Conditions>
+          </MachiningRule>
+        </MachiningRuleLibrary>
+        <MachiningRuleLibrary Name="3.4_Pin_Hole" Description="销孔">
+          <MachiningRuleLibrary Name="3.4_Pin_Pre" Description="预钻孔">
+            <MachiningRule Name="3.4_Pin_Pre_D4" ExternalId="#3.4_Pin_Pre_D4" Priority="2110" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 3.68
+mwf.DIAMETER_1 &lt;= 3.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 3.6500000000000004
+tool.Diameter &lt;= 3.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D4"
+oper.description = "3.4_Pin_Pre_D4"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D5" ExternalId="#3.4_Pin_Pre_D5" Priority="2120" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 4.68
+mwf.DIAMETER_1 &lt;= 4.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 4.65
+tool.Diameter &lt;= 4.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D5"
+oper.description = "3.4_Pin_Pre_D5"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D6" ExternalId="#3.4_Pin_Pre_D6" Priority="2130" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 5.68
+mwf.DIAMETER_1 &lt;= 5.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 5.65
+tool.Diameter &lt;= 5.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D6"
+oper.description = "3.4_Pin_Pre_D6"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D8" ExternalId="#3.4_Pin_Pre_D8" Priority="2140" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 7.68
+mwf.DIAMETER_1 &lt;= 7.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 7.65
+tool.Diameter &lt;= 7.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D8"
+oper.description = "3.4_Pin_Pre_D8"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D10" ExternalId="#3.4_Pin_Pre_D10" Priority="2150" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 9.68
+mwf.DIAMETER_1 &lt;= 9.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 9.649999999999999
+tool.Diameter &lt;= 9.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D10"
+oper.description = "3.4_Pin_Pre_D10"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D12" ExternalId="#3.4_Pin_Pre_D12" Priority="2160" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 11.68
+mwf.DIAMETER_1 &lt;= 11.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 11.649999999999999
+tool.Diameter &lt;= 11.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D12"
+oper.description = "3.4_Pin_Pre_D12"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D16" ExternalId="#3.4_Pin_Pre_D16" Priority="2170" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 15.68
+mwf.DIAMETER_1 &lt;= 15.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 15.649999999999999
+tool.Diameter &lt;= 15.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D16"
+oper.description = "3.4_Pin_Pre_D16"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Pre_D20" ExternalId="#3.4_Pin_Pre_D20" Priority="2180" OperationClass="hole_making.DRILLING" MWF="HOLE" LWF="BLANK" ToolClass="TWIST_DRILL" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 19.68
+mwf.DIAMETER_1 &lt;= 19.72
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 19.65
+tool.Diameter &lt;= 19.75</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Pre_D20"
+oper.description = "3.4_Pin_Pre_D20"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+          </MachiningRuleLibrary>
+          <MachiningRuleLibrary Name="3.4_Pin_Ream" Description="铰孔">
+            <MachiningRule Name="3.4_Pin_Ream_D4" ExternalId="#3.4_Pin_Ream_D4" Priority="3110" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 3.98
+mwf.DIAMETER_1 &lt;= 4.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 3.95
+tool.Diameter &lt;= 4.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D4"
+oper.description = "3.4_Pin_Ream_D4"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D5" ExternalId="#3.4_Pin_Ream_D5" Priority="3120" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 4.98
+mwf.DIAMETER_1 &lt;= 5.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 4.95
+tool.Diameter &lt;= 5.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D5"
+oper.description = "3.4_Pin_Ream_D5"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D6" ExternalId="#3.4_Pin_Ream_D6" Priority="3130" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 5.98
+mwf.DIAMETER_1 &lt;= 6.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 5.95
+tool.Diameter &lt;= 6.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D6"
+oper.description = "3.4_Pin_Ream_D6"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D8" ExternalId="#3.4_Pin_Ream_D8" Priority="3140" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 7.98
+mwf.DIAMETER_1 &lt;= 8.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 7.95
+tool.Diameter &lt;= 8.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D8"
+oper.description = "3.4_Pin_Ream_D8"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D10" ExternalId="#3.4_Pin_Ream_D10" Priority="3150" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 9.98
+mwf.DIAMETER_1 &lt;= 10.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 9.95
+tool.Diameter &lt;= 10.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D10"
+oper.description = "3.4_Pin_Ream_D10"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D12" ExternalId="#3.4_Pin_Ream_D12" Priority="3160" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 11.98
+mwf.DIAMETER_1 &lt;= 12.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 11.95
+tool.Diameter &lt;= 12.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D12"
+oper.description = "3.4_Pin_Ream_D12"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D16" ExternalId="#3.4_Pin_Ream_D16" Priority="3170" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 15.98
+mwf.DIAMETER_1 &lt;= 16.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 15.95
+tool.Diameter &lt;= 16.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D16"
+oper.description = "3.4_Pin_Ream_D16"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+            <MachiningRule Name="3.4_Pin_Ream_D20" ExternalId="#3.4_Pin_Ream_D20" Priority="3180" OperationClass="hole_making.REAMING" MWF="HOLE" LWF="BLANK" ToolClass="REAMER" Description="">
+              <Conditions>
+                <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 19.98
+mwf.DIAMETER_1 &lt;= 20.02
+lwf.MACHINING_RULE = TWIST_DRILL
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+                <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 19.95
+tool.Diameter &lt;= 20.05</ToolAttributes>
+                <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+                <OperationAttributes>REM Operation Attributes
+oper.name = "3.4_Pin_Ream_D20"
+oper.description = "3.4_Pin_Ream_D20"</OperationAttributes>
+              </Conditions>
+            </MachiningRule>
+          </MachiningRuleLibrary>
+        </MachiningRuleLibrary>
+      </MachiningRuleLibrary>
+      <MachiningRuleLibrary Name="04_Chamfer" Description="倒角库">
+        <MachiningRule Name="4.1_Hole_Chamfer_C0p5" ExternalId="#4.1_Hole_Chamfer_C0p5" Priority="3310" OperationClass="mill_planar.CHAMFER_MILLING" MWF="HOLE" LWF="BLANK" ToolClass="CHAMFER_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 3.0
+mwf.DIAMETER_1 &lt;= 20.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 5.0
+tool.Diameter &lt;= 16.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "4.1_Hole_Chamfer_C0p5"
+oper.description = "4.1_Hole_Chamfer_C0p5"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="4.2_Hole_Chamfer_C1p0" ExternalId="#4.2_Hole_Chamfer_C1p0" Priority="3320" OperationClass="mill_planar.CHAMFER_MILLING" MWF="HOLE" LWF="BLANK" ToolClass="CHAMFER_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.DIAMETER_1 &gt;= 6.0
+mwf.DIAMETER_1 &lt;= 30.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 8.0
+tool.Diameter &lt;= 20.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "4.2_Hole_Chamfer_C1p0"
+oper.description = "4.2_Hole_Chamfer_C1p0"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="4.3_Outer_Chamfer_General" ExternalId="#4.3_Outer_Chamfer_General" Priority="3330" OperationClass="mill_planar.CHAMFER_MILLING" MWF="EDGE" LWF="BLANK" ToolClass="CHAMFER_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.LENGTH &gt;= 20.0
+mwf.LENGTH &lt;= 5000.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 8.0
+tool.Diameter &lt;= 25.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "4.3_Outer_Chamfer_General"
+oper.description = "4.3_Outer_Chamfer_General"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+        <MachiningRule Name="4.4_Deburr_Light_Pass" ExternalId="#4.4_Deburr_Light_Pass" Priority="3340" OperationClass="mill_planar.CHAMFER_MILLING" MWF="EDGE" LWF="BLANK" ToolClass="CHAMFER_MILL" Description="">
+          <Conditions>
+            <ApplicationCriteria>REM Application Criteria
+mwf.LENGTH &gt;= 5.0
+mwf.LENGTH &lt;= 8000.0
+
+$$ Rule rejected because condition FALSE</ApplicationCriteria>
+            <ToolAttributes>REM Tool Attributes
+tool.Diameter &gt;= 6.0
+tool.Diameter &lt;= 20.0</ToolAttributes>
+            <LessWorkedFeatureAttributes>REM Less Worked Feature Attributes</LessWorkedFeatureAttributes>
+            <OperationAttributes>REM Operation Attributes
+oper.name = "4.4_Deburr_Light_Pass"
+oper.description = "4.4_Deburr_Light_Pass"</OperationAttributes>
+          </Conditions>
+        </MachiningRule>
+      </MachiningRuleLibrary>
+      <collections>
+        <item>#OOTB_EnvironmentLibraryEnvRuleRoot</item>
+      </collections>
+      <children/>
+    </MachiningRuleLibrary>
+  </Objects>
+</Data>
