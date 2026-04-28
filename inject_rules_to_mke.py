@@ -24,26 +24,39 @@ def backup_original(filepath):
 
 def clean_legacy_nodes(xml_content):
     """
-    强制清洗：清除所有带有 Factory_Plate_General 前缀的遗留节点
-    避免孤儿节点和 ExternalId 冲突
+    强制清洗：清除所有旧的 Factory_Plate_General 相关节点
+    包括时间戳 ExternalId 的节点，避免孤儿节点和 ExternalId 冲突
     """
     print("🧹 开始清洗遗留节点...")
     
-    # 清除旧的 Factory_Plate_General 相关节点
+    # 更激进的清洗模式
     patterns_to_remove = [
+        # 1. 旧的 Factory_Plate_General 库（按 Name）
         r'<MachiningRuleLibrary[^>]*Name="Factory_Plate_General"[^>]*/>',
         r'<MachiningRuleLibrary[^>]*Name="Factory_Plate_General"[^>]*>.*?</MachiningRuleLibrary>',
-        r'<MachiningRule[^>]*ExternalId="#Factory_Plate_[^"]*"[^>]*/>',
+        
+        # 2. 旧的时间戳 ExternalId 的所有 MachiningRuleLibrary
+        r'<MachiningRuleLibrary[^>]*ExternalId="\d{2}-\d{2}-\d{4}__\d{2}_\d{2}_\d{2}_\d+_\d+"[^>]*>.*?</MachiningRuleLibrary>',
+        
+        # 3. 旧的时间戳 ExternalId 的所有 MachiningRule
+        r'<MachiningRule[^>]*ExternalId="\d{2}-\d{2}-\d{4}__\d{2}_\d{2}_\d{2}_\d+_\d+"[^>]*>.*?</MachiningRule>',
+        
+        # 4. 清理所有引用旧 ExternalId 的 children/collections item
+        r'<item>\d{2}-\d{2}-\d{4}__\d{2}_\d{2}_\d{2}_\d+_\d+</item>',
     ]
     
     cleaned_content = xml_content
-    for pattern in patterns_to_remove:
+    total_removed = 0
+    
+    for i, pattern in enumerate(patterns_to_remove):
         matches = re.findall(pattern, cleaned_content, re.DOTALL)
         if matches:
-            print(f"  找到 {len(matches)} 个匹配项，正在清除...")
+            count = len(matches)
+            total_removed += count
             cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.DOTALL)
+            print(f"  ✅ 模式 {i+1}: 删除 {count} 个匹配项")
     
-    print("✅ 清洗完成")
+    print(f" 共删除 {total_removed} 个遗留节点")
     return cleaned_content
 
 def inject_rules(target_xml, source_xml):

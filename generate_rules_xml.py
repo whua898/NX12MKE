@@ -29,11 +29,23 @@ class RuleGenerator:
         self.rule_library.set("ExternalId", "#Factory_Plate_General_Lib")
         self.rule_library.set("Description", "板类零件通用加工规则库 v2.0")
         
-    def add_face_milling_rules(self):
-        """添加面加工规则 (01_Face_Milling)"""
-        parent = ET.SubElement(self.rule_library, "MachiningRuleLibrary")
-        parent.set("Name", "01_Face_Milling")
-        parent.set("Description", "面加工库")
+    def _create_rule_library(self, parent, name, description=""):
+        """Create a MachiningRuleLibrary with correct OOTB structure"""
+        lib = ET.SubElement(parent, "MachiningRuleLibrary")
+        # Use unique ExternalId
+        lib.set("ExternalId", f"#Lib_{name}")
+        # Add NodeInfo
+        node_info = ET.SubElement(lib, "NodeInfo")
+        # Generate a random-looking ID or use a hash to avoid conflicts
+        import hashlib
+        id_hash = int(hashlib.md5(name.encode()).hexdigest()[:8], 16) % 10000
+        ET.SubElement(node_info, "Id").text = str(id_hash)
+        # Add Name as child element (CRITICAL for NX MKE)
+        ET.SubElement(lib, "name").text = name
+        if description:
+            # Description is usually not a tag, but we can add it if needed
+            pass
+        return lib
         
         rules_data = [
             {
@@ -106,11 +118,9 @@ class RuleGenerator:
         for rule_data in rules_data:
             self._create_rule(parent, rule_data)
             
-    def add_pocket_slot_rules(self):
-        """添加型腔与槽规则 (02_Pocket_Slot)"""
-        parent = ET.SubElement(self.rule_library, "MachiningRuleLibrary")
-        parent.set("Name", "02_Pocket_Slot")
-        parent.set("Description", "型腔与槽库")
+    def add_face_milling_rules(self):
+        """添加面加工规则 (01_Face_Milling)"""
+        parent = self._create_rule_library(self.rule_library, "01_Face_Milling", "面加工库")
         
         rules_data = [
             {
@@ -219,16 +229,13 @@ class RuleGenerator:
         for rule_data in rules_data:
             self._create_rule(parent, rule_data)
             
+    def add_pocket_slot_rules(self):
+        """添加型腔与槽规则 (02_Pocket_Slot)"""
+        parent = self._create_rule_library(self.rule_library, "02_Pocket_Slot", "型腔与槽库")
+        
     def add_hole_making_rules(self):
         """添加孔加工规则 (03_Hole_Making)"""
-        parent = ET.SubElement(self.rule_library, "MachiningRuleLibrary")
-        parent.set("Name", "03_Hole_Making")
-        parent.set("Description", "孔加工库")
-        
-        # 3.1 Spot Drill
-        spot_lib = ET.SubElement(parent, "MachiningRuleLibrary")
-        spot_lib.set("Name", "3.1_Spot")
-        spot_lib.set("Description", "定位钻")
+        parent = self._create_rule_library(self.rule_library, "03_Hole_Making", "孔加工库")
         
         spot_rule = {
             "name": "3.1_Spot_D10",
@@ -247,10 +254,8 @@ class RuleGenerator:
         }
         self._create_rule(spot_lib, spot_rule)
         
-        # 3.2 Thread Bottom Holes
-        thread_bottom_lib = ET.SubElement(parent, "MachiningRuleLibrary")
-        thread_bottom_lib.set("Name", "3.2_Thread_Bottom")
-        thread_bottom_lib.set("Description", "螺纹底孔")
+        # 3.1 Spot Drill
+        spot_lib = self._create_rule_library(parent, "3.1_Spot", "定位钻")
         
         thread_bottom_data = [
             ("3.2_Thread_Bottom_D3p4", "2210", 3.4, 3.10, 3.50),
@@ -282,10 +287,8 @@ class RuleGenerator:
             }
             self._create_rule(thread_bottom_lib, rule)
             
-        # 3.3 Thread Through Holes
-        thread_through_lib = ET.SubElement(parent, "MachiningRuleLibrary")
-        thread_through_lib.set("Name", "3.3_Thread_Through")
-        thread_through_lib.set("Description", "螺纹过孔")
+        # 3.2 Thread Bottom Holes
+        thread_bottom_lib = self._create_rule_library(parent, "3.2_Thread_Bottom", "螺纹底孔")
         
         thread_through_data = [
             ("3.3_Thread_Through_D9", "2310", 9.0, 8.98, 9.02),
@@ -314,15 +317,11 @@ class RuleGenerator:
             }
             self._create_rule(thread_through_lib, rule)
             
-        # 3.4 Pin Holes (Pre-Drill + Ream)
-        pin_hole_lib = ET.SubElement(parent, "MachiningRuleLibrary")
-        pin_hole_lib.set("Name", "3.4_Pin_Hole")
-        pin_hole_lib.set("Description", "销孔")
+        # 3.3 Thread Through Holes
+        thread_through_lib = self._create_rule_library(parent, "3.3_Thread_Through", "螺纹过孔")
         
-        # Pre-Drill rules
-        pre_drill_lib = ET.SubElement(pin_hole_lib, "MachiningRuleLibrary")
-        pre_drill_lib.set("Name", "3.4_Pin_Pre")
-        pre_drill_lib.set("Description", "预钻孔")
+        # 3.4 Pin Holes (Pre-Drill + Ream)
+        pin_hole_lib = self._create_rule_library(parent, "3.4_Pin_Hole", "销孔")
         
         pin_pre_data = [
             ("3.4_Pin_Pre_D4", "2110", 4.0, 3.7, 3.68, 3.72),
@@ -354,10 +353,8 @@ class RuleGenerator:
             }
             self._create_rule(pre_drill_lib, rule)
             
-        # Ream rules
-        ream_lib = ET.SubElement(pin_hole_lib, "MachiningRuleLibrary")
-        ream_lib.set("Name", "3.4_Pin_Ream")
-        ream_lib.set("Description", "铰孔")
+        # Pre-Drill rules
+        pre_drill_lib = self._create_rule_library(pin_hole_lib, "3.4_Pin_Pre", "预钻孔")
         
         pin_ream_data = [
             ("3.4_Pin_Ream_D4", "3110", 4.0, 3.98, 4.02),
@@ -390,11 +387,8 @@ class RuleGenerator:
             }
             self._create_rule(ream_lib, rule)
             
-    def add_chamfer_rules(self):
-        """添加倒角规则 (04_Chamfer)"""
-        parent = ET.SubElement(self.rule_library, "MachiningRuleLibrary")
-        parent.set("Name", "04_Chamfer")
-        parent.set("Description", "倒角库")
+        # Ream rules
+        ream_lib = self._create_rule_library(pin_hole_lib, "3.4_Pin_Ream", "铰孔")
         
         rules_data = [
             {
@@ -466,17 +460,9 @@ class RuleGenerator:
         for rule_data in rules_data:
             self._create_rule(parent, rule_data)
             
-    def _create_rule(self, parent, rule_data):
-        """创建单个规则"""
-        rule = ET.SubElement(parent, "MachiningRule")
-        rule.set("Name", rule_data["name"])
-        rule.set("ExternalId", f"#{rule_data['name']}")
-        rule.set("Priority", rule_data["priority"])
-        rule.set("OperationClass", rule_data["op_class"])
-        rule.set("MWF", rule_data["mwf"])
-        rule.set("LWF", rule_data["lwf"])
-        rule.set("ToolClass", rule_data["tool_class"])
-        rule.set("Description", rule_data.get("description", ""))
+    def add_chamfer_rules(self):
+        """添加倒角规则 (04_Chamfer)"""
+        parent = self._create_rule_library(self.rule_library, "04_Chamfer", "倒角库")
         
         # Conditions
         conditions = ET.SubElement(rule, "Conditions")
@@ -531,14 +517,36 @@ class RuleGenerator:
         
         objects = ET.SubElement(root, "Objects")
         
-        # Add collections reference - point to OOTB root
-        collections = ET.SubElement(self.rule_library, "collections")
-        ET.SubElement(collections, "item").text = "#OOTB_EnvironmentLibraryEnvRuleRoot"
+    def _create_rule(self, parent, rule_data):
+        """创建单个规则 - 模仿 OOTB 结构"""
+        rule = ET.SubElement(parent, "MachiningRule")
+        # ExternalId as attribute
+        rule.set("ExternalId", f"#Rule_{rule_data['name']}")
         
-        # Add NodeInfo with Id
-        node_info = ET.Element("NodeInfo")
-        ET.SubElement(node_info, "Id").text = "819"
-        self.rule_library.insert(0, node_info)
+        # NodeInfo
+        node_info = ET.SubElement(rule, "NodeInfo")
+        import hashlib
+        id_hash = int(hashlib.md5(rule_data['name'].encode()).hexdigest()[:8], 16) % 10000
+        ET.SubElement(node_info, "Id").text = str(id_hash)
+        
+        # Name as child element (CRITICAL)
+        ET.SubElement(rule, "name").text = rule_data["name"]
+        
+        # Priority, OperationClass, etc. as child elements or attributes?
+        # OOTB uses attributes for Priority, OperationClass, etc.
+        rule.set("Priority", rule_data["priority"])
+        rule.set("OperationClass", rule_data["op_class"])
+        rule.set("MWF", rule_data["mwf"])
+        rule.set("LWF", rule_data["lwf"])
+        rule.set("ToolClass", rule_data["tool_class"])
+        
+        # Add collections reference
+        collections = ET.SubElement(rule, "collections")
+        # We don't know the parent ID yet, so we leave it empty or add a placeholder
+        # The injection script should handle this, or we can skip it here
+        
+        # Conditions
+        conditions = ET.SubElement(rule, "Conditions")
         
         # Add children references for sub-libraries ONLY (not individual rules)
         children = ET.SubElement(self.rule_library, "children")
