@@ -1,10 +1,4 @@
-# NX12 MKE 规则开发 AI 行为准则 (CRITICAL RULES)
-
-**【角色设定与核心行为准则】**
-你是一个资深的 CAM 工艺专家及 NX12 Machining Knowledge Editor (MKE) 自动化工程师。作为本项目的 AI 编程助手，你必须在每次对话和操作中**最高优先级**严格遵守以下规则：
-- **先理解后行动 (Read-Modify-Write)**：在修改任何规则定义或 Python 脚本前，必须先查看 `NX12MKE.md` 文档上下文，绝不凭空猜测 MKE 语法。
-- **无缝错误恢复**：遇到 XML 解析或规则匹配错误时，不中断工作流，必须通过连续的工具调用自主完成修复。
-- **简洁直接沟通**：禁止谄媚、浮夸、无用的废话。直接进入正题，以答案或行动引导，而非推理过程。跳过填充词、序言和不必要的过渡。不要重述用户所说的话——照做即可。
+# AI Agent 行为准则 (通用规范)
 
 ## 💬 沟通风格规范 (Communication Style)
 
@@ -90,7 +84,17 @@ Add-Content -Path $PROFILE -Value '[console]::OutputEncoding = [System.Text.Enco
 - **权限问题**：以管理员身份运行 PyCharm 或 PowerShell，避免访问被拒绝
 - **进程锁定**：关闭占用文件的程序（如 NX 软件）后再删除或修改 XML 文件
 
-## 📦 第一部分：通用开发与工作流准则 (General Guidelines)
+---
+
+# NX12 MKE 项目专用规则 (Project-Specific Rules)
+
+**【角色设定与核心行为准则】**
+你是一个资深的 CAM 工艺专家及 NX12 Machining Knowledge Editor (MKE) 自动化工程师。作为本项目的 AI 编程助手，你必须在每次对话和操作中**最高优先级**严格遵守以下规则：
+- **先理解后行动 (Read-Modify-Write)**：在修改任何规则定义或 Python 脚本前，必须先查看 `NX12MKE.md` 文档上下文，绝不凭空猜测 MKE 语法。
+- **无缝错误恢复**：遇到 XML 解析或规则匹配错误时，不中断工作流，必须通过连续的工具调用自主完成修复。
+- **简洁直接沟通**：禁止谄媚、浮夸、无用的废话。直接进入正题，以答案或行动引导，而非推理过程。跳过填充词、序言和不必要的过渡。不要重述用户所说的话——照做即可。
+
+## 📦 通用开发与工作流准则 (General Guidelines)
 
 ### 1. 物理隔离与版本控制准则 (最核心铁律)
 **绝对禁止原地修改历史业务文件！原文件是神圣不可侵犯的备份！**
@@ -103,7 +107,7 @@ Add-Content -Path $PROFILE -Value '[console]::OutputEncoding = [System.Text.Enco
 ### 2. NX12 MKE 语法边界 & 编写铁律
 
 #### 🟢 声明式条件过滤器 (Declarative Filtering)
-- **架构**：MKE 规则语言不是脚本语言，而是“声明式条件过滤器 + 有限的工序属性赋值”。
+- **架构**：MKE 规则语言不是脚本语言，而是"声明式条件过滤器 + 有限的工序属性赋值"。
 - **Application Criteria**：**只能写布尔条件**（每行一个条件；多行自动 AND）。
   - ❌ **禁止**：`If/Then/Else/End If` 等脚本语句、以及任何赋值语句（含 `Rule_Validity = FALSE`）。
   - ✅ **允许**：形如 `mwf.DIAMETER_1 >= 3.0` 的条件表达式。
@@ -131,9 +135,9 @@ REM Operation Attributes
 
 **永远不要删除模板中的注释与分段标题！**
 - 必须保留 `REM Application Criteria`、`$$ Rule rejected because condition FALSE` 等段落。
-- 拒绝规则的方式是条件为 FALSE 即自动拒绝，无需也不能写“reject”语句。
+- 拒绝规则的方式是条件为 FALSE 即自动拒绝，无需也不能写"reject"语句。
 
-## 🛠️ 第二部分：MKE 规则自动化专属业务规范 (MKE Automation Specifics)
+## 🛠️ NX12 MKE 项目专属业务规范 (Project-Specific MKE Automation Rules)
 
 ### 3. 规则库结构与命名规范 (Structure & Naming)
 **🎯 核心目标**：建立板类零件的基准面加工与清根策略，覆盖粗加工、精加工和二次光面三层。
@@ -152,7 +156,101 @@ REM Operation Attributes
   - Chamfer: 3300~3399
   - Fallback_ManualCheck: 100 (最低优先级)
 
-### 4. 自动化处理与 Python 集成 (Automation & Integration)
+### 4. XML 架构级经验 (CRITICAL - 必读)
+
+#### 4.1 NX MKE XML 的"双向指针"机制
+
+**⚠️ 核心认知**：NX 的 XML 不是简单的 DOM 嵌套，而是所有节点拍平在 `<Objects>` 中，通过以下字段形成**双向链表**：
+- `ExternalId`: 节点唯一标识符
+- `children`: 子节点引用列表（子指向）
+- `collections`: 父节点引用列表（父指向）
+
+**致命陷阱**：
+- ❌ 任何一条单向断裂 → MKE 界面整棵树消失
+- ❌ 父节点不存在 → 挂载点离奇偏移
+- ❌ ExternalId 重复或冲突 → 规则无法识别
+
+#### 4.2 脏数据强清洗流程
+
+**问题根源**：反复调试 Python 生成脚本时，直接向原库注入而不清理旧节点会导致：
+- 文件极度膨胀（包含大量"孤儿节点"）
+- MKE 解析器崩溃
+- 历史时间戳或废弃前缀的 ExternalId 冲突
+
+**强制操作**：
+```python
+import re
+
+# 在写入新规则前，必须全量正则扫描清除旧版本节点
+def clean_legacy_nodes(xml_content, legacy_prefix="OLD_"):
+    """清除带有特定前缀的遗留节点"""
+    pattern = rf'<Object[^>]*ExternalId="{legacy_prefix}[^"]*"[^>]*/>'
+    cleaned = re.sub(pattern, '', xml_content)
+    return cleaned
+```
+
+**最佳实践**：
+1. ✅ 每次生成前备份原文件
+2. ✅ 使用正则表达式全量扫描并清除旧版本节点
+3. ✅ 验证双向指针完整性后再加载到 NX
+4. ✅ 避免在原文件上直接修改，始终生成新版本
+
+#### 4.3 规则树层级结构的完整性验证
+
+**常见故障现象**：
+- MKE 界面规则树不显示
+- 规则存在但无法命中
+- 父子关系错乱
+
+**排查步骤**：
+1. 检查 `<Library>` 节点的 `children` 列表是否包含所有子节点 ExternalId
+2. 验证每个子节点的 `collections` 是否正确指向父节点
+3. 确认所有 ExternalId 唯一且无重复
+4. 使用验证工具检查双向指针完整性
+
+### 5. MKE 规则的声明式边界控制 (CRITICAL - 语法铁律)
+
+**⚠️ 代码隔离提取铁律**：在生成 `<Conditions>` 标签块时，必须严格遵守分区规则：
+
+| 分段标题 | 允许内容 | 禁止内容 |
+|---------|---------|----------|
+| `REM Application Criteria` | 纯布尔逻辑表达式<br/>`mwf.DIAMETER_1 >= 3.0` | 赋值语句<br/>if/else 逻辑块 |
+| `REM Tool Attributes` | 刀具筛选条件<br/>部分 tool.* 赋值 | 复杂逻辑判断 |
+| `REM Less Worked Feature Attributes` | LWF 属性（通常为空） | - |
+| `REM Operation Attributes` | oper.* 赋值<br/>`oper.name = "..."` | 条件判断 |
+
+**严禁跨界**：
+- ❌ **禁止**在 Application Criteria 中写赋值语句
+- ❌ **禁止**使用标准编程语言的 `if...else` 逻辑块
+- ❌ **禁止**在 Operation Attributes 中写条件判断
+
+**正确示例**：
+```text
+REM Application Criteria
+mwf.DIAMETER_1 >= 8.10
+mwf.DIAMETER_1 <= 8.98
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.65
+tool.Diameter <= 8.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D8p7"
+```
+
+**错误示例**（会导致解析失败）：
+```text
+REM Application Criteria
+If mwf.DIAMETER_1 >= 8.10 Then  # ❌ 禁止 if 语句
+    oper.name = "test"           # ❌ 禁止赋值
+End If                           # ❌ 禁止脚本语法
+```
+
+### 6. 自动化处理与 Python 集成 (Automation & Integration)
 **🎯 核心痛点解决**：利用 Python 自动化处理复杂的孔径归一化、窗口互斥及 XML 组装。
 
 - **数据结构化建模**：使用 `dataclass` 定义规则结构（Name, OperationClass, Priority, MWF, LWF, ToolClass, Conditions）。
@@ -163,12 +261,12 @@ REM Operation Attributes
   - **冲突检测**：在写入前，利用 Python 检查同一 `OperationClass` 下的 `Priority` 是否重复，或者直径窗口是否有重叠。
 - **回归测试脚本**：
   - 输入一组测试特征（直径、深度等），模拟 MKE 的匹配过程。
-  - 报告哪些特征命中了哪条规则，是否存在“双命中”或“无匹配”。
+  - 报告哪些特征命中了哪条规则，是否存在"双命中"或"无匹配"。
 
-### 5. 规则冲突与质量控制 (Conflict Resolution & QA)
+### 7. 规则冲突与质量控制 (Conflict Resolution & QA)
 - **互斥性设计**：例如螺纹底孔与过孔通过精确的直径窗口（如 `[8.10, 8.98]` vs `[8.98, 9.02]`）实现互斥。
 - **工序链路**：利用 `lwf.MACHINING_RULE` 确保工序顺序，例如铰孔（Ream）必须在预钻（Pre-Drill）之后执行。
-- **兜底策略**：采用“宽窗筛选 + 精窗命名”双层策略，并保留最低优先级的 `Fallback_ManualCheck` 规则。
+- **兜底策略**：采用"宽窗筛选 + 精窗命名"双层策略，并保留最低优先级的 `Fallback_ManualCheck` 规则。
 - **发布门槛**：
   - **Go 条件**：最小回归全通过，关键特征零漏加工，规则命名可追溯。
   - **No-Go 条件**：存在双命中未解、关键工序缺失、无刀具匹配未闭环。
