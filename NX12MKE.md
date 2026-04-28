@@ -1742,6 +1742,129 @@ XML 结构模板:
 
 ---
 
+### G.3 核心架构经验与避坑指南
+
+#### 经验 1: NX MKE XML 的"双向指针"与脏数据强清洗
+
+**严苛的 OOTB 依赖**：
+- NX 的 XML 并不是简单的 DOM 嵌套结构
+- 所有节点全部拍平在 `<Objects>` 中
+- 通过 `ExternalId`、`children`（子指向）和 `collections`（父指向）形成**双向链表**
+- **任何一条单向断裂**，或者父节点不存在，都会导致：
+  - MKE 界面整棵树消失
+  - 挂载点离奇偏移
+  - 规则无法识别
+
+**不可撤销残留的杀伤力**：
+- 反复调试 Python 生成脚本时，直接向原库注入而不清理旧节点会导致：
+  - 文件极度膨胀（包含大量"孤儿节点"）
+  - MKE 解析器崩溃
+  - 历史时间戳或废弃前缀的 ExternalId 冲突
+
+**强制清洗流程**：
+```python
+import re
+
+# 在写入新规则前，强制全量正则扫描清除旧版本节点
+def clean_legacy_nodes(xml_content, legacy_prefix="OLD_"):
+    """清除带有特定前缀的遗留节点"""
+    # 匹配并删除旧的 ExternalId 引用
+    pattern = rf'<Object[^>]*ExternalId="{legacy_prefix}[^"]*"[^>]*/>'
+    cleaned = re.sub(pattern, '', xml_content)
+    
+    # 清理孤立的 children/collections 引用
+    # ... 更多清洗逻辑
+    return cleaned
+```
+
+**最佳实践**：
+1. 每次生成前备份原文件
+2. 使用正则表达式全量扫描并清除旧版本节点
+3. 验证双向指针完整性后再加载到 NX
+4. 避免在原文件上直接修改，始终生成新版本
+
+#### 经验 2: MKE 规则的声明式边界控制
+
+**代码隔离提取铁律**：
+
+在生成 `<Conditions>` 标签块时，必须严格遵守以下分区规则：
+
+| 分段标题 | 允许内容 | 禁止内容 |
+|---------|---------|----------|
+| `REM Application Criteria` | 纯布尔逻辑表达式<br/>`mwf.DIAMETER_1 >= 3.0` | 赋值语句<br/>if/else 逻辑块 |
+| `REM Tool Attributes` | 刀具筛选条件<br/>部分 tool.* 赋值 | 复杂逻辑判断 |
+| `REM Less Worked Feature Attributes` | LWF 属性（通常为空） | - |
+| `REM Operation Attributes` | oper.* 赋值<br/>`oper.name = "..."` | 条件判断 |
+
+**严禁跨界**：
+- ❌ **禁止**在 Application Criteria 中写赋值语句
+- ❌ **禁止**使用标准编程语言的 `if...else` 逻辑块
+- ❌ **禁止**在 Operation Attributes 中写条件判断
+
+**正确示例**：
+```text
+REM Application Criteria
+mwf.DIAMETER_1 >= 8.10
+mwf.DIAMETER_1 <= 8.98
+
+$$ Rule rejected because condition FALSE
+
+REM Tool Attributes
+tool.Diameter >= 8.65
+tool.Diameter <= 8.75
+
+REM Less Worked Feature Attributes
+
+REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D8p7"
+```
+
+**错误示例**（会导致解析失败）：
+```text
+REM Application Criteria
+If mwf.DIAMETER_1 >= 8.10 Then  # ❌ 禁止 if 语句
+    oper.name = "test"           # ❌ 禁止赋值
+End If                           # ❌ 禁止脚本语法
+```
+
+#### 经验 3: 规则树层级结构的完整性验证
+
+**常见故障现象**：
+- MKE 界面规则树不显示
+- 规则存在但无法命中
+- 父子关系错乱
+
+**排查步骤**：
+1. 检查 `<Library>` 节点的 `children` 列表是否包含所有子节点 ExternalId
+2. 验证每个子节点的 `collections` 是否正确指向父节点
+3. 确认所有 ExternalId 唯一且无重复
+4. 使用 XML 验证工具检查双向指针完整性
+
+**验证脚本示例**：
+```python
+def validate_bidirectional_links(xml_tree):
+    """验证双向指针完整性"""
+    objects = xml_tree.findall('.//Object')
+    external_ids = {obj.get('ExternalId') for obj in objects}
+    
+    for obj in objects:
+        # 检查 children 引用
+        children = obj.find('children')
+        if children is not None:
+            for child_ref in children.findall('Ref'):
+                if child_ref.get('id') not in external_ids:
+                    print(f"⚠️ 断裂的子引用: {child_ref.get('id')}")
+        
+        # 检查 collections 引用
+        collections = obj.find('collections')
+        if collections is not None:
+            for coll_ref in collections.findall('Ref'):
+                if coll_ref.get('id') not in external_ids:
+                    print(f"⚠️ 断裂的父引用: {coll_ref.get('id')}")
+```
+
+---
+
 **文档维护**: 工艺工程团队  
 **最后更新**: 2026-04-28  
 **状态**: ✅ 生产就绪 (Production Ready)
