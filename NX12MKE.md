@@ -1,4 +1,4 @@
-﻿# NX12 MKE 板类零件自动化加工规则库手册
+# NX12 MKE 板类零件自动化加工规则库手册
 
 **版本**: v2.0 | **发布日期**: 2026-04-27 | **状态**: 生产就绪
 
@@ -14,7 +14,13 @@
 - [6. 工艺常量参考](#6-工艺常量参考)
 - [7. 质量控制与测试](#7-质量控制与测试)
 - [8. 运维与持续改进](#8-运维与持续改进)
-- [附录](#附录)
+- [附录A: 标准工艺卡](#附录a-标准工艺卡)
+- [附录B: 快速参考表](#附录b-快速参考表)
+- [附录C: 故障排查指南](#附录c-故障排查指南)
+- [附录D: 参考资料](#附录d-参考资料)
+- [附录E: 版本历史](#附录e-版本历史)
+- [附录F: 完整规则 Conditions 代码块](#附录f-完整规则-conditions-代码块)
+- [附录G: XML 转换与插入指南](#附录g-xml-转换与插入指南)
 
 ---
 
@@ -518,9 +524,7 @@ LWF: BLANK
 
 ---
 
-## 附录
-
-### A. 标准工艺卡 (工序号+刀具+质量控制点)
+## 附录A: 标准工艺卡 (工序号+刀具+质量控制点)
 
 | 工序号 | 工序内容 | 刀具建议 | 质量控制点 |
 |--------|---------|---------|-----------|
@@ -540,7 +544,7 @@ LWF: BLANK
 - 若出现双命中或无刀具匹配，先启用 `Fallback_ManualCheck` 保产线
 - 每次换版必须同步更新工艺卡版本、规则版本与发布签核页
 
-### B. 快速参考表
+### 附录B: 快速参考表
 
 **优先级分带总表**：
 
@@ -563,7 +567,7 @@ LWF: BLANK
 | 沉孔 | COUNTERBORE | THRU_HOLE | Counterboring |
 | 倒角 | CHAMFER | HOLE/EDGE | Chamfer Milling |
 
-### C. 故障排查指南
+### 附录C: 故障排查指南
 
 **常见问题与解决方案**：
 
@@ -581,7 +585,7 @@ LWF: BLANK
 3. 查范围与优先级：先放宽命中，再回收精度
 4. 留痕：更新 Change Log，记录 Owner/Date/Delta
 
-### D. 参考资料
+### 附录D: 参考资料
 
 - `NX12MKE_v1.3_Backup.md` - 原始规范文档（含完整规则Conditions代码块）
 - `tool_database.dat` - 刀具库定义（488KB）
@@ -591,7 +595,7 @@ LWF: BLANK
 - `factory_plate_rules_complete_README.md` - 规则库导入指南
 - `generate_rules_xml.py` - XML自动生成脚本
 
-### E. 版本历史
+### 附录E: 版本历史
 
 | 版本 | 日期 | 修订说明 |
 |------|------|---------|
@@ -601,166 +605,13 @@ LWF: BLANK
 
 ---
 
-## F. XML 转换与插入指南
-
-### F.1 从文本 Conditions 到 XML 的转换流程
-
-**步骤概览**:
-1. 从 `NX12MKE_v1.3_Backup.md` 复制规则的 Conditions 代码块
-2. 使用 Python 脚本或手动转换为 XML 格式
-3. 插入到 `machining_knowledge.xml` 的正确位置
-4. 验证 XML 格式并在 NX 中测试
-
-### F.2 使用 Python 脚本自动生成 XML
-
-项目提供 `generate_rules_xml.py` 脚本自动化此过程。
-
-**基本用法**:
-```python
-from generate_rules_xml import create_rule_element, insert_rule_to_library
-
-# 定义规则
-rule_data = {
-    'name': '3.2_Thread_Bottom_D8p7',
-    'operation_class': 'hole_making.DRILLING',
-    'priority': 2250,
-    'mwf': 'HOLE',
-    'lwf': 'BLANK',
-    'tool_class': 'TWIST_DRILL',
-    'conditions': {
-        'application': [
-            'mwf.DIAMETER_1 >= 8.10',
-            'mwf.DIAMETER_1 <= 8.98'
-        ],
-        'tool': [
-            'tool.Diameter >= 8.65',
-            'tool.Diameter <= 8.75'
-        ],
-        'operation': [
-            'oper.name = "3.2_Thread_Bottom_D8p7"'
-        ]
-    }
-}
-
-# 生成并插入
-xml_file = 'machining_knowledge.xml'
-library_path = 'Factory_Plate_General/03_Hole_Making'
-insert_rule_to_library(xml_file, library_path, rule_data)
-```
-
-### F.3 手动构造 XML 规则元素
-
-**XML 结构模板**:
-```xml
-<Rule Name="3.2_Thread_Bottom_D8p7" Priority="2250" OperationClass="hole_making.DRILLING">
-  <MoreWorkedFeature Type="HOLE"/>
-  <LessWorkedFeature Type="BLANK"/>
-  <ToolClass>TWIST_DRILL</ToolClass>
-  <Conditions>
-    <ApplicationCriteria>
-      <Condition>mwf.DIAMETER_1 &gt;= 8.10</Condition>
-      <Condition>mwf.DIAMETER_1 &lt;= 8.98</Condition>
-    </ApplicationCriteria>
-    <ToolAttributes>
-      <Condition>tool.Diameter &gt;= 8.65</Condition>
-      <Condition>tool.Diameter &lt;= 8.75</Condition>
-    </ToolAttributes>
-    <LessWorkedFeatureAttributes/>
-    <OperationAttributes>
-      <Assignment>oper.name = "3.2_Thread_Bottom_D8p7"</Assignment>
-    </OperationAttributes>
-  </Conditions>
-</Rule>
-```
-
-**关键注意事项**:
-- 特殊字符转义: `>=` → `&gt;=`, `<=` → `&lt;=`
-- 保留所有 REM 注释和 `$$ Rule rejected` 行（在 XML 中作为注释）
-- 文件编码必须为 UTF-8
-- 确保同一库内规则名称唯一
-
-### F.4 插入规则到现有 XML
-
-**方法 1: 使用 Python (推荐)**
-```python
-import xml.etree.ElementTree as ET
-
-# 加载 XML
-tree = ET.parse('machining_knowledge.xml')
-root = tree.getroot()
-
-# 找到目标库节点
-library = root.find('.//Library[@Name="03_Hole_Making"]')
-
-# 创建新规则元素
-new_rule = ET.SubElement(library, 'Rule')
-new_rule.set('Name', 'New_Rule_Name')
-new_rule.set('Priority', '2500')
-# ... 设置其他属性和子元素
-
-# 保存
-tree.write('machining_knowledge_v2.xml', encoding='utf-8', xml_declaration=True)
-```
-
-**方法 2: 手动编辑**
-1. 备份原文件: `Copy-Item machining_knowledge.xml machining_knowledge_backup.xml`
-2. 用文本编辑器打开 XML
-3. 定位到目标 `<Library>` 节点
-4. 粘贴构造好的 `<Rule>` 元素
-5. 保存并用验证脚本检查格式
-
-### F.5 XML 格式验证
-
-**验证脚本**:
-```python
-import xml.etree.ElementTree as ET
-
-def validate_xml(filepath):
-    try:
-        tree = ET.parse(filepath)
-        rules = tree.findall('.//Rule')
-        print(f"✓ XML 格式正确，共 {len(rules)} 条规则")
-        
-        # 检查重复规则名
-        names = [r.get('Name') for r in rules]
-        duplicates = set([n for n in names if names.count(n) > 1])
-        if duplicates:
-            print(f"⚠ 发现重复规则名: {duplicates}")
-        else:
-            print("✓ 无重复规则名")
-        
-        return True
-    except ET.ParseError as e:
-        print(f"✗ XML 解析错误: {e}")
-        return False
-
-validate_xml('machining_knowledge.xml')
-```
-
-### F.6 常见问题与解决
-
-| 问题 | 原因 | 解决方案 |
-|------|------|----------|
-| 规则详情空白 | XML 格式不符合 Schema | 对比导出规则，确保结构一致 |
-| 导入失败 | 编码问题 | 使用 UTF-8 编码保存 |
-| 规则不命中 | MWF/LWF 类型错误 | 检查特征类型映射表 |
-| 双命中 | 优先级或窗口重叠 | 调整 Priority 或缩小窗口 |
-| 无刀具可用 | 刀具库缺失 | 检查 tool_database.dat |
-
-**详细规则代码**: 所有规则的完整 Conditions 代码块请参见 `NX12MKE_v1.3_Backup.md` 第 126-1180 行，可直接复制到 MKE 编辑器使用。
-
----
-
-**文档维护**: 工艺工程团队  
-**最后更新**: 2026-04-27  
-**状态**: ✅ 生产就绪 (Production Ready)
-
-
----
-
-## 附录A: 完整规则 Conditions 代码块
+## 附录F: 完整规则 Conditions 代码块
 
 > **说明**: 以下所有规则的完整 Conditions 代码可直接复制到 MKE 编辑器使用。
+
+---
+
+### F.1 面加工规则 (01_Face_Milling)
 ### 3) 1.1\~1.4 完整 Conditions（可直接复制到 MKE）
 
 ```text
@@ -1810,11 +1661,9 @@ Rule Name（规则名） & Priority（建议）
 ```
 
 **录库检查清单（Chamfer）：**
-
-
 ---
 
-## 附录B: XML 转换与插入指南
+## 附录G: XML 转换与插入指南
 
 ### B.1 从文本 Conditions 到 XML 的转换
 
