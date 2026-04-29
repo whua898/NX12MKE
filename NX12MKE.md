@@ -14,6 +14,7 @@
 - [6. 工艺常量参考](#6-工艺常量参考)
 - [7. 质量控制与测试](#7-质量控制与测试)
 - [8. 运维与持续改进](#8-运维与持续改进)
+- [9. 核心元数据解析与避坑真理](#9-核心元数据解析与避坑真理)
 - [附录A: 标准工艺卡](#附录a-标准工艺卡)
 - [附录B: 快速参考表](#附录b-快速参考表)
 - [附录C: 故障排查指南](#附录c-故障排查指南)
@@ -21,6 +22,7 @@
 - [附录E: 版本历史](#附录e-版本历史)
 - [附录F: 完整规则 Conditions 代码块](#附录f-完整规则-conditions-代码块)
 - [附录G: XML 转换与插入指南](#附录g-xml-转换与插入指南)
+- [附录H: V12 成功经验与避坑总结](#附录h-v12-成功经验与避坑总结)
 
 ---
 
@@ -172,7 +174,7 @@ Machining Knowledge
 
 > **一句话**：NX12 MKE 规则语言不是脚本语言，而是**"声明式条件过滤器 + 有限的工序属性赋值"**。
 
-### 4.2 固定结构（顺序不可改、标题不可删）
+### 4.2 固定结构（**强制标准格式，顺序不可改、标题不可删**）
 
 ```text
 REM Application Criteria
@@ -190,6 +192,13 @@ REM Less Worked Feature Attributes
 REM Operation Attributes
 <允许 oper.* 赋值>
 ```
+
+**⚠️ 关键要求**（**违反会导致规则无声拒绝**）：
+1. **区块分隔**：每个 REM 标题前后必须有明确空行
+2. **$$ 标记**：必须保留 `$$ Rule rejected because condition FALSE` 作为区块分隔符
+3. **Application Criteria**：**严禁**混入赋值语句（如 `oper.name = "..."`）
+4. **Operation Attributes**：是**唯一**允许 `oper.*` 赋值的地方
+5. **禁止删除**：任何 REM 标题和 $$ 标记都不可删除
 
 ### 4.3 Application Criteria（应用条件）
 
@@ -521,6 +530,129 @@ LWF: BLANK
 - **Do**：在验证库调整规则并执行最小回归
 - **Check**：对比调整前后关键指标（命中率、冲突率、兜底率）
 - **Act**：通过评审后发布生产库，并更新 Change Log
+
+---
+
+## 9. 核心元数据解析与避坑真理
+
+> **核心提示**：本章沉淀了在生成、解析与注入 NX12 Machining Knowledge Editor (MKE) 的 XML 规则时所有的"血泪教训"与底层原厂真理，指导如何编写健壮的 Python 自动化脚本，绕开隐式陷阱。
+
+### 9.1 规则为何会"无声拒收"？(The Boolean Sandbox Trap)
+
+**现象**：编译 XML 一切正常，能在 NX 界面查看到规则节点。但是在识别计算特征时，规则永远分配不上。
+
+**根因与真理**：
+在 `<Conditions>` 的 `REM Application Criteria` 段落下，NX MKE 引擎仅支持纯粹的**布尔运算逻辑**，不支持赋值运算。
+
+**致命错误示例**：
+```text
+REM Application Criteria
+lwf.MACHINING_RULE = "TWIST_DRILL"  # ❌ 致命错误：赋值语句
+oper.name = "MyOp"                  # ❌ 致命错误：赋值语句
+```
+
+这会被引擎隐式判定为 `Rule rejected because condition FALSE`，导致整个工序崩塌！
+
+**修正规范**：
+所有的赋值操作，必须全部后置到 `REM Operation Attributes`：
+```text
+REM Application Criteria
+mwf.DIAMETER_1 >= 8.10
+mwf.DIAMETER_1 <= 8.98
+
+$$ Rule rejected because condition FALSE
+
+REM Operation Attributes
+oper.name = "3.2_Thread_Bottom_D8p7"  # ✅ 正确位置
+```
+
+### 9.2 打孔工序双命中冲突 (Input/Output Identical Trap)
+
+**现象**：创建一条正常打孔规则时，NX 提示 `The less worked feature is identical to the more worked feature`。
+
+**根因与真理**：
+对于一个全新的毛坯加工圆孔，如果你的规则中 `Input` 写 `feature.STEP1HOLE` 并且 `Output` 也是 `feature.STEP1HOLE` 就会构成逻辑循环死锁。
+
+**孔加工的合规映射法则**：
+```xml
+<!-- ✅ 正确配置：毛坯直接出阶梯孔 -->
+<Input><item>feature.BLANK</item></Input>
+<Output><item>feature.STEP1HOLE</item></Output>
+```
+
+**工序链路示例**：
+- **预钻孔**: `BLANK` → `STEP1HOLE`（从毛坯到阶梯孔）
+- **铰孔**: `STEP1HOLE` → `HOLE`（从阶梯孔到成品孔）
+
+### 9.3 型腔与槽名称与深度的绝对定义
+
+**现象**：想要限制型腔的加工深度，使用了 `mwf.DEPTH_1 <= 30.0` 但死活匹配不到特征。
+
+**根因与真理**：
+- `_1`, `_2` 后缀多用于阶梯孔系统 (`STEP1HOLE`, `STEP2HOLE`)。
+- 在 NX OOTB 库中，方型腔与槽的真名是 `feature.POCKET_RECTANGULAR_STRAIGHT` 与 `feature.SLOT_RECTANGULAR`。
+- 这两个特征描述"深度"的保留字是 **`mwf.DEPTH`**，千万不要加下标后缀！
+
+**正确用法**：
+```text
+REM Application Criteria
+mwf.DEPTH >= 1.0
+mwf.DEPTH <= 40.0
+```
+
+### 9.4 知识库架构与工艺阵列设计
+
+为覆盖"板类结构件"的加工场景，整个知识库划分了四个层面的优先级段位（Priority Band），以确保粗精加工及各工序执行的有序性：
+
+#### 9.4.1 `01_Face_Milling` (面加工库) - 优先级区间 1200+
+基于毛坯表面进行顶面、底面的大面积去除计算。
+- 1.1 顶层平面粗铣 (`1.1_Face_Top_Rough`)
+- 1.2 顶层平面精铣 / 1.3 底面精铣 / 1.4 薄壁轻切
+
+#### 9.4.2 `02_Pocket_Slot` (型腔与槽加工库) - 优先级区间 2400+
+- 2.1 型腔粗加工 (`Pocket_Rough_General`)
+- 2.2 / 2.3 型腔侧壁底面精铣
+- 2.4 / 2.5 开槽与闭槽加工 (`Slot_Open_Rough` / `Slot_Closed_Finish`)
+- 2.6 清角轻切 (`Corner_Rest_Mill`)
+
+#### 9.4.3 `03_Hole_Making` (孔加工矩阵) - 优先级错落区间 1100，2100-3200
+孔系统的连环加工最易引发顺序混乱，优先级严格约束为：
+- 1100段：中心定位钻 (`Spot_Drill`)
+- 2100段：销孔预钻 (`Pin_Pre`)
+- 2200段：螺纹打底孔 (`Thread_Bottom`)
+- 2300段：螺纹通孔过孔 (`Thread_Through`)
+- 3100段：销孔铰孔 (`Pin_Ream`)
+- 3200段：巨型孔直铣 (`Large_Hole_Mill`)
+
+#### 9.4.4 `04_Chamfer` (倒角库) - 优先级区间 3300+
+作为所有刀路的终结动作。
+- 孔口倒角 (`Hole_Chamfer`)
+- 外交线倒角与通用去毛刺 (`Deburr_Light_Pass`)
+
+### 9.5 自动化开发与 XML 注入体系
+
+#### 9.5.1 脏数据清洗与双向指针安全 (XML Double-Link Protection)
+NX 的 machining_knowledge.xml 并没有常规树结构的物理嵌套层级！而是所有 `<MachiningRule>` 全部拍平放置在一个巨型 `<Objects>` 列表里，通过节点间的 `collections` 与 `children` 上的 `ExternalId` 互指维系！
+
+**更新法则**：在覆盖、注入同名 Factory 系列库时，绝不可简单 `append()`！必须有一段 `erase_corrupted_nodes` 级别的 Python 脚本，以正则表达式或列表匹配的方式移除全部带有旧标记的 `<MachiningRule>` 和 `<MachiningRuleLibrary>`，否则残留的历史节点将导致 MKE 树枝散落或彻底失效。
+
+**双向指针验证清单**：
+1. 父节点的 `<children>` 必须列出所有子节点的 `ExternalId`
+2. 子节点的 `<collections>` 必须指向父节点的 `ExternalId`
+3. 所有 `ExternalId` 必须全局唯一
+4. 顶层库必须包含 `<Constants />` 和 `<Customization />` 标签
+
+---
+
+## 附录：运维排查矩阵一览
+
+| 报错或异常特征 | 最可能的原因 | 解决路径指引 |
+|:--------------|:------------|:------------|
+| 规则在 MKE 中存在，但识别后无法分配 | Application Criteria 混入了赋值语句 | 检查 Conditions 块下的赋值，移至底部的 Operation Attributes |
+| 无法提取预期的型腔深度 | 使用了带有下划线数字后缀孔系变量 `DEPTH_1` | 更改筛选条件为 `mwf.DEPTH` |
+| 提示 `less worked feature is identical...` | Input 与 Output 特征类型重复 | 改用 `<Input><item>feature.BLANK</item></Input>` |
+| 生成脚本运行时报 `require is not defined` | 环境被声明为 ES Module | 确保跨端调用包装脚本扩展名为 `.cjs` |
+| 生成 XML 加载后部分节点脱钩/偏移 | `ExternalId` 发生历史残留或父级指向错误 | 写入库前执行大清洗清退所有重名 ExternalId 以及 children 队列 |
 
 ---
 
@@ -1862,6 +1994,34 @@ def validate_bidirectional_links(xml_tree):
                 if coll_ref.get('id') not in external_ids:
                     print(f"⚠️ 断裂的父引用: {coll_ref.get('id')}")
 ```
+
+---
+
+## 附录H: V12 成功经验与避坑总结
+
+### H.1 V12 成功关键
+
+1. **不生成 DecorationObjects/History 标签**（与 V7 克隆方案的致命差异）
+2. **严格遵循官方四区块格式**（REM 标题 + 空行分隔 + $$ 标记）
+3. **Input/Output 顺序与原生一致**（Input → OperationClass → Output）
+4. **直接构建 XML，不依赖克隆**（避免旧 ExternalId 引用残留）
+
+### H.2 7 次失败教训
+
+| 版本 | 问题 | 后果 | 解决方案 |
+|------|------|------|----------|
+| V5/V6 | 缺失 DecorationObjects/History | "is not valid class" | V7 克隆保留标签 |
+| V7 初版 | DecorationObjects 含旧 OOTB ExternalId | 规则详情空白 | 清空 DecorationObjects 内容 |
+| V7 修复版 | 保留空标签但 NX 仍报错 | 解析错位 | **V12：完全不生成这两个标签** |
+| 所有版本 | Conditions 格式不规范 | 规则无声拒绝 | **严格按官方四区块格式** |
+| 所有版本 | Application Criteria 混入赋值 | 规则被拒绝 | **赋值移至 Operation Attributes** |
+
+### H.3 核心铁律（永久记住）
+
+1. **DecorationObjects/History 标签不要生成**（Gemini V12 验证成功）
+2. **Conditions 四区块格式不可改**（官方文档第 47-52 页）
+3. **Application Criteria 只能写布尔条件**（严禁赋值语句）
+4. **先读取文档/记忆，再生成代码**（避免凭空猜测）
 
 ---
 
